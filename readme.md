@@ -4,6 +4,12 @@ Here's an overview of the solution in bullet points.
 After each bullet point we will be testing the last state of the 
 application with all the added features
 
+We divide the full deployment process into 3 cycles. 
+In the end of first cycle, 
+- you will create local deployment with a container for your app
+- and then you deployed it on the cloud in a simple way
+
+
 # 1.First cycle 
 ## 1.1 App Modernization (local development)
 
@@ -43,44 +49,18 @@ application with all the added features
 - **Enhanced CI/CD pipeline to include IaC deployment with Terraform**
 - **Deploy on GCP using terraform**
 
-# Third cycle
+# 3. Third cycle
 - **Deploy on GKE using terraform**
 - **Refine CI/CD process to support deployments to GKE using Terraform**
 
 
+Define Interfaces for Data Access
 
+First, define interfaces or abstract classes that encapsulate the operations your application needs to perform on data stores or caches.
 
+ Implement the Interfaces
+ 
+Next, provide concrete implementations of these interfaces for specific backends (e.g., file system storage, cloud storage):
 
-
-
-
-
-- **FastAPI for API Development**:
-  - Utilize FastAPI to build the API, benefiting from its asynchronous handling capabilities.
-  - FastAPI will serve as the entry point for all incoming requests to the Stable Diffusion app.
-
-- **Celery for Asynchronous Task Management**:
-  - Implement Celery to manage tasks asynchronously, allowing for efficient GPU task processing without blocking incoming API requests.
-  - Celery workers will handle the heavy lifting of processing requests on the GPU.
-
-- **Redis or RabbitMQ as Celery's Message Broker**:
-  - Use Redis or RabbitMQ to manage the queue of tasks that Celery will process. This acts as the intermediary between the API and the task workers.
-  - This broker facilitates the distribution of tasks to Celery workers and helps in scaling by adding more workers as needed.
-
-- **CUDA for GPU Resource Management**:
-  - Employ CUDA for direct control over GPU resources, ensuring efficient task execution and resource utilization.
-  - This will be used by the Celery workers to process tasks on the GPU.
-
-- **Implementation Steps**:
-  1. **Set Up FastAPI**: Code the API using FastAPI, defining endpoints for submitting and managing requests.
-  2. **Set Up Celery**: Implement Celery with either Redis or RabbitMQ as the broker to handle tasks asynchronously.
-  3. **Integrate CUDA**: In the Celery tasks, utilize CUDA for GPU-based processing, leveraging libraries like `cupy` or `pycuda`.
-  4. **Process Requests Asynchronously**: When a request is received, FastAPI enqueues a task in Celery and immediately responds to the user. The Celery worker then processes the task using GPU resources.
-  5. **Respond to Users**: After processing, the results can be made available to the users through a callback, polling, or another method suitable for the application's architecture.
-
-- **Running the System**:
-  - Start the message broker (Redis or RabbitMQ).
-  - Launch the Celery worker(s) to listen for tasks.
-  - Serve the FastAPI application, handling incoming requests and delegating processing tasks to Celery.
-
-This solution ensures that your Stable Diffusion app's backend can handle multiple requests concurrently, efficiently utilizing GPU resources without forcing users to wait in a queue.
+ Use the Abstraction in Your Application
+ 

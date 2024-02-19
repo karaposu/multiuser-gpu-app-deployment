@@ -4,29 +4,19 @@ import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
 
-from abc import ABC, abstractmethod
-from typing import List
+from data_access_impl import LocalImageStorage, LocalModelLoader, LocalTextStorage
+# from data_access_impl import CloudImageStorage, CloudModelLoader, CloudTextStorage
 
-class ImageStorage(ABC):
-    @abstractmethod
-    def save_image(self, image_data: bytes, image_name: str) -> None:
-        """Save an image to the storage."""
-        pass
 
-    @abstractmethod
-    def retrieve_image(self, image_name: str) -> bytes:
-        """Retrieve an image from the storage."""
-        pass
+from data_access_interfaces import ModelLoader
+from typing import Any
 
-class FileSystemImageStorage(ImageStorage):
-    def save_image(self, image_data: bytes, image_name: str) -> None:
-        with open(image_name, 'wb') as image_file:
-            image_file.write(image_data)
-
-    def retrieve_image(self, image_name: str) -> bytes:
-        with open(image_name, 'rb') as image_file:
-            return image_file.read()
-
+class LocalModelLoader(ModelLoader):
+    def load_model(self, model_name: str) -> Any:
+        # Implement local model loading logic here
+        ckpt_path = folder_paths.get_full_path("checkpoints", model_name)
+        out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
+        return out[:3]
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -142,9 +132,14 @@ from nodes import (
 
 
 def main():
+    local_model_loader = LocalModelLoader()
+    # Create an instance of CheckpointLoaderSimple with LocalModelLoader injected
+    checkpoint_loader = CheckpointLoaderSimple(model_loader=local_model_loader)
+
     import_custom_nodes()
     with torch.inference_mode():
-        checkpointloadersimple = CheckpointLoaderSimple()
+        # checkpointloadersimple = CheckpointLoaderSimple()
+        checkpointloadersimple = CheckpointLoaderSimple(model_loader=local_model_loader)
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaperXL_turboDpmppSDE.safetensors"
         )

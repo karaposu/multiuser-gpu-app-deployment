@@ -543,39 +543,39 @@ class CheckpointLoader:
         ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
         return comfy.sd.load_checkpoint(config_path, ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
 
-# class CheckpointLoaderSimple:
-#     @classmethod
-#     def INPUT_TYPES(s):
-#         return {"required": { "ckpt_name": (folder_paths.get_filename_list("checkpoints"), ),
-#                              }}
-#     RETURN_TYPES = ("MODEL", "CLIP", "VAE")
-#     FUNCTION = "load_checkpoint"
-#
-#     CATEGORY = "loaders"
-#
-#     def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
-#         ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
-#         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
-#         return out[:3]
-
 class CheckpointLoaderSimple:
     @classmethod
-    def INPUT_TYPES(cls):
-        return {"required": {"ckpt_name": (folder_paths.get_filename_list("checkpoints"),)}}
-
+    def INPUT_TYPES(s):
+        return {"required": { "ckpt_name": (folder_paths.get_filename_list("checkpoints"), ),
+                             }}
     RETURN_TYPES = ("MODEL", "CLIP", "VAE")
     FUNCTION = "load_checkpoint"
-    CATEGORY = "loaders"
 
-    def __init__(self, model_loader: ModelLoader):
-        self.model_loader = model_loader
+    CATEGORY = "loaders"
 
     def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
         ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
-        # Use the injected model_loader to load the model
-        model = self.model_loader.load_model(ckpt_path)
         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
         return out[:3]
+
+# class CheckpointLoaderSimple:
+#     @classmethod
+#     def INPUT_TYPES(cls):
+#         return {"required": {"ckpt_name": (folder_paths.get_filename_list("checkpoints"),)}}
+#
+#     RETURN_TYPES = ("MODEL", "CLIP", "VAE")
+#     FUNCTION = "load_checkpoint"
+#     CATEGORY = "loaders"
+#
+#     def __init__(self, model_loader: ModelLoader):
+#         self.model_loader = model_loader
+#
+#     def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
+#         ckpt_path = folder_paths.get_full_path("checkpoints", ckpt_name)
+#         # Use the injected model_loader to load the model
+#         model = self.model_loader.load_model(ckpt_path)
+#         out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
+#         return out[:3]
 
 class DiffusersLoader:
     @classmethod

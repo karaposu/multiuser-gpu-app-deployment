@@ -11,12 +11,7 @@ from data_access_impl import LocalImageStorage, LocalModelLoader, LocalTextStora
 from data_access_interfaces import ModelLoader
 from typing import Any
 
-class LocalModelLoader(ModelLoader):
-    def load_model(self, model_name: str) -> Any:
-        # Implement local model loading logic here
-        ckpt_path = folder_paths.get_full_path("checkpoints", model_name)
-        out = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
-        return out[:3]
+from data_access_impl import LocalModelLoader
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -132,14 +127,12 @@ from nodes import (
 
 
 def main():
-    local_model_loader = LocalModelLoader()
-    # Create an instance of CheckpointLoaderSimple with LocalModelLoader injected
-    checkpoint_loader = CheckpointLoaderSimple(model_loader=local_model_loader)
 
     import_custom_nodes()
     with torch.inference_mode():
+        checkpointloadersimple = LocalModelLoader()
         # checkpointloadersimple = CheckpointLoaderSimple()
-        checkpointloadersimple = CheckpointLoaderSimple(model_loader=local_model_loader)
+
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaperXL_turboDpmppSDE.safetensors"
         )

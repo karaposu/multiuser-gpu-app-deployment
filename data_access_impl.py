@@ -2,6 +2,11 @@ from data_access_interfaces import ImageStorage, ModelLoader, TextStorage
 from abc import ABC, abstractmethod
 from typing import Any
 
+from nodes import CheckpointLoaderSimple  # Ensure this import path is correct
+
+
+
+
 
 # Concrete classes for local storage
 class LocalImageStorage(ImageStorage):
@@ -13,11 +18,17 @@ class LocalImageStorage(ImageStorage):
         # Implement local image retrieval logic
         pass
 
-
 class LocalModelLoader(ModelLoader):
-    def load_model(self, model_name: str) -> Any:
-        # Implement local model loading logic
-        pass
+    def load_checkpoint(self, model_name, output_vae=True, output_clip=True):
+        # Using CheckpointLoaderSimple to load the model checkpoint
+        return CheckpointLoaderSimple().load_checkpoint(model_name, output_vae=output_vae, output_clip=output_clip)
+
+
+
+# class LocalModelLoader(ModelLoader):
+#     def load_model(self, model_name: str) -> Any:
+#         # Implement local model loading logic
+#         pass
 
 
 class LocalTextStorage(TextStorage):

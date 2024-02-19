@@ -6,7 +6,6 @@ class ImageStorage(ABC):
     @abstractmethod
     def save_image(self, filename_prefix: str, images: Any) -> Any:
         pass
-
     @abstractmethod
     def retrieve_image(self, filename_prefix: str) -> Any:
         pass
@@ -14,7 +13,7 @@ class ImageStorage(ABC):
 
 class ModelLoader(ABC):
     @abstractmethod
-    def load_model(self, model_name: str) -> Any:
+    def load_checkpoint(self, model_name, output_vae=True, output_clip=True):
         pass
 
 

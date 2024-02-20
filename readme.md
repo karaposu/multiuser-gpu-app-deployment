@@ -13,18 +13,18 @@ In the end of first cycle,
 # 1.First cycle 
 ## 1.1 App Modernization (local development)
 
-- **Run your already existing app.py and take notes of system and GPU loads**
-- **Abstract the Data Access Layer** Ensure your application interacts with its data storage, cache, and any external state through an abstract data access layer. This means your application code should not directly call specific databases or caching systems. Instead, use interfaces or abstract classes that can be implemented for different backends
-- **Create mocks to use with Data Access Layer and connect them**
-- **Test if the app logic is working without any problems**
-- **Redesign your app.py in a way to use env variables as feature flags**(local, cloud, test, prod...)
-- **Design an api and create a basic documentation** 
-- **Wrap it with fastapi**
-- **Create simple tests for api calls and app logic**
-- **Use postman test if all systems are working**
-- **Implement Celery to manage tasks asynchronously**
-- **Use Redis**  to manage the queue of tasks that Celery will process.
-- **use postman test if all systems are working**
+- **a) Run your already existing app.py and take notes of system and GPU loads**
+- **b) Abstract the Data Access Layer** Ensure your application interacts with its data storage, cache, and any external state through an abstract data access layer. This means your application code should not directly call specific databases or caching systems. Instead, use interfaces or abstract classes that can be implemented for different backends
+- **c) Create mocks to use with Data Access Layer and connect them**
+- **d) Test if the app logic is working without any problems**
+- **e) Redesign your app.py in a way to use env variables as feature flags**(local, cloud, test, prod...)
+- **f) Design an api and create a basic documentation** 
+- **g) Wrap it with fastapi**
+- **h) Create simple tests for api calls and app logic**
+- **i) Use postman test if all systems are working**
+- **j) Implement Celery to manage tasks asynchronously**
+- **k) Use Redis**  to manage the queue of tasks that Celery will process.
+- **l) use postman test if all systems are working**
 
 ## 1.2 Deployment Readiness  (local development)
 - **Run a Redis container locally to mimic Memorystore and a PostgreSQL container as a stand-in for Cloud SQL**

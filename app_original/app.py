@@ -4,15 +4,6 @@ import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
 
-from data_access_impl import LocalImageStorage, LocalModelLoader, LocalTextStorage
-# from data_access_impl import CloudImageStorage, CloudModelLoader, CloudTextStorage
-
-
-from data_access_interfaces import ModelLoader
-from typing import Any
-
-from data_access_impl import LocalModelLoader
-
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
@@ -127,12 +118,9 @@ from nodes import (
 
 
 def main():
-
     import_custom_nodes()
     with torch.inference_mode():
-        checkpointloadersimple = LocalModelLoader()
-        # checkpointloadersimple = CheckpointLoaderSimple()
-
+        checkpointloadersimple = CheckpointLoaderSimple()
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaperXL_turboDpmppSDE.safetensors"
         )

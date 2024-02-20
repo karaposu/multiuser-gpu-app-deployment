@@ -130,8 +130,8 @@ def main():
 
     import_custom_nodes()
     with torch.inference_mode():
-        #checkpointloadersimple = LocalModelLoader()
-        checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
+        checkpointloadersimple = LocalModelLoader()
+        # checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
 
         # checkpointloadersimple = CheckpointLoaderSimple()
 

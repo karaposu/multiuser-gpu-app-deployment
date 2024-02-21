@@ -4,14 +4,13 @@ import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
 
-from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
-# from data_access_impl import CloudImageStorage, CloudModelLoader, CloudTextStorage
 
-
-from data_access_interfaces import ModelLoader
-from typing import Any
-
-from data_access_impl import LocalModelLoader
+# 
+# from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
+#
+# #checkpointloadersimple = LocalModelLoader()
+# #checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
+# #checkpointloadersimple = CheckpointLoaderSimple()
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -91,80 +90,44 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
-
-def import_custom_nodes() -> None:
-    """Find all custom nodes in the custom_nodes folder and add those node objects to NODE_CLASS_MAPPINGS
-
-    This function sets up a new asyncio event loop, initializes the PromptServer,
-    creates a PromptQueue, and initializes the custom nodes.
-    """
-    import asyncio
-    import execution
-    from nodes import init_custom_nodes
-    import server
-
-    # Creating a new event loop and setting it as the default loop
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    # Creating an instance of PromptServer with the loop
-    server_instance = server.PromptServer(loop)
-    execution.PromptQueue(server_instance)
-
-    # Initializing custom nodes
-    init_custom_nodes()
-
-
 from nodes import (
-    KSampler,
+    CLIPTextEncode,
     SaveImage,
+    VAEDecode,
+    KSampler,
     NODE_CLASS_MAPPINGS,
     EmptyLatentImage,
-    VAEDecode,
     CheckpointLoaderSimple,
-    CLIPTextEncode,
 )
 
 
 def main():
-
-    import_custom_nodes()
     with torch.inference_mode():
-        #checkpointloadersimple = LocalModelLoader()
-        checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
-
-        # checkpointloadersimple = CheckpointLoaderSimple()
-
+        checkpointloadersimple = CheckpointLoaderSimple()
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
-            ckpt_name="dreamshaperXL_turboDpmppSDE.safetensors"
+            ckpt_name="dreamshaper_8.safetensors"
         )
 
         emptylatentimage = EmptyLatentImage()
         emptylatentimage_5 = emptylatentimage.generate(
-            width=1024, height=1024, batch_size=1
+            width=512, height=512, batch_size=1
         )
 
         cliptextencode = CLIPTextEncode()
         cliptextencode_6 = cliptextencode.encode(
-            text="A cat with wings walking towards sunset",
+            text="beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
             clip=get_value_at_index(checkpointloadersimple_4, 1),
         )
 
         cliptextencode_7 = cliptextencode.encode(
-            text="text, watermark, blury",
-            clip=get_value_at_index(checkpointloadersimple_4, 1),
-        )
-
-        upscalemodelloader = NODE_CLASS_MAPPINGS["UpscaleModelLoader"]()
-        upscalemodelloader_10 = upscalemodelloader.load_model(
-            model_name="4xUltrasharp_4xUltrasharpV10.pt"
+            text="text, watermark", clip=get_value_at_index(checkpointloadersimple_4, 1)
         )
 
         ksampler = KSampler()
         vaedecode = VAEDecode()
         saveimage = SaveImage()
 
-        for q in range(1):
+        for q in range(10):
             ksampler_3 = ksampler.sample(
                 seed=random.randint(1, 2**64),
                 steps=20,

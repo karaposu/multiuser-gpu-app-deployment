@@ -5,6 +5,7 @@ from typing import Sequence, Mapping, Any, Union
 import torch
 
 
+
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
 

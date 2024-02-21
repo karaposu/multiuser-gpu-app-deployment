@@ -1,15 +1,15 @@
 import unittest
 from unittest.mock import patch
-from app import main  # Import the main function from your application code
+from workflow_api import main  # Import the main function from your application code
 from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
 
-# python -m unittest test_main.py
+# python -m unittest test_workflow_api.py
 
 class TestMainFunction(unittest.TestCase):
-    @patch('path.to.GoogleCloudStorageModelLoader.GoogleCloudStorageModelLoader')
+    @patch('workflow_api.GoogleCloudStorageModelLoader')
     def test_main_uses_local_loader_instead(self, mock_model_loader):
         # Set up the mock to use LocalModelLoader instead
-        mock_model_loader.return_value = LocalModelLoader(bucket_name="your_bucket_name")
+        mock_model_loader.return_value = LocalModelLoader()
 
         # Call main, which will use the mocked GoogleCloudStorageModelLoader
         main()

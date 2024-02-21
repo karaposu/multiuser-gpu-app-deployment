@@ -1,4 +1,5 @@
 # MULTIUSER-GPU-APP-DEPLOYMENT
+
 Our aim is to deploy an existing GPU-accelerated application, app.py, in a manner that ensures scalability, the capability to handle heavy traffic, and aligns with professional product deployment practices for multi-user access.
 Here's an overview of the solution in bullet points. 
 After each bullet point we will be testing the last state of the 

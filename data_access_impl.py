@@ -18,13 +18,13 @@ class LocalModelLoader(ModelLoader):
 #         # Initialize the cache as an empty dictionary
 #         self.cache = {}
 #
-#     def _generate_cache_key(self, model_name, output_vae, output_clip):
+#     def _generate_cache_key(self, ckpt_name, output_vae, output_clip):
 #         # Create a unique key for each combination of model and its configurations
-#         return f"{model_name}_vae={output_vae}_clip={output_clip}"
+#         return f"{ckpt_name}_vae={output_vae}_clip={output_clip}"
 #
-#     def load_checkpoint(self, model_name, output_vae=True, output_clip=True):
+#     def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
 #         # Generate a unique key for the current request
-#         cache_key = self._generate_cache_key(model_name, output_vae, output_clip)
+#         cache_key = self._generate_cache_key(ckpt_name, output_vae, output_clip)
 #
 #         # Check if the model is already in the cache
 #         if cache_key in self.cache:
@@ -32,7 +32,7 @@ class LocalModelLoader(ModelLoader):
 #             return self.cache[cache_key]
 #
 #         # If not in cache, load the model
-#         model_data = CheckpointLoaderSimple().load_checkpoint(model_name, output_vae=output_vae, output_clip=output_clip)
+#         model_data = CheckpointLoaderSimple().load_checkpoint(ckpt_name, output_vae=output_vae, output_clip=output_clip)
 #
 #         # Store the loaded model in the cache
 #         self.cache[cache_key] = model_data
@@ -53,17 +53,17 @@ class GoogleCloudStorageModelLoader(ModelLoader):
         self.bucket = self.client.bucket(bucket_name)
         self.cache = {}
 
-    def _generate_cache_key(self, model_name, output_vae, output_clip):
-        return f"{model_name}_vae={output_vae}_clip={output_clip}"
+    def _generate_cache_key(self, ckpt_name, output_vae, output_clip):
+        return f"{ckpt_name}_vae={output_vae}_clip={output_clip}"
 
-    def _download_model_from_cloud(self, model_name):
-        local_path = os.path.join(self.cache_dir, model_name)
-        blob = self.bucket.blob(model_name)
+    def _download_model_from_cloud(self, ckpt_name):
+        local_path = os.path.join(self.cache_dir, ckpt_name)
+        blob = self.bucket.blob(ckpt_name)
         blob.download_to_filename(local_path)
         return local_path
 
-    def load_checkpoint(self, model_name, output_vae=True, output_clip=True):
-        cache_key = self._generate_cache_key(model_name, output_vae, output_clip)
+    def load_checkpoint(self, ckpt_name, output_vae=True, output_clip=True):
+        cache_key = self._generate_cache_key(ckpt_name, output_vae, output_clip)
 
         # Check cache first
         if cache_key in self.cache:
@@ -71,7 +71,7 @@ class GoogleCloudStorageModelLoader(ModelLoader):
             return self.cache[cache_key]
 
         # If not in cache, download the model
-        local_model_path = self._download_model_from_cloud(model_name)
+        local_model_path = self._download_model_from_cloud(ckpt_name)
 
         # Load the model using CheckpointLoaderSimple or another appropriate method
         # Assuming CheckpointLoaderSimple or equivalent can load from the local path
@@ -119,7 +119,7 @@ class GoogleCloudStorageModelLoader(ModelLoader):
 
 
 # class CloudModelLoader(ModelLoader):
-#     def load_model(self, model_name: str) -> Any:
+#     def load_model(self, ckpt_name: str) -> Any:
 #         # Implement cloud model loading logic
 #         pass
 #

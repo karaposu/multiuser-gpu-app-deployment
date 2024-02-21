@@ -5,12 +5,8 @@ from typing import Sequence, Mapping, Any, Union
 import torch
 
 
-# 
-# from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
-#
-# #checkpointloadersimple = LocalModelLoader()
-# #checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
-# #checkpointloadersimple = CheckpointLoaderSimple()
+
+from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -103,7 +99,9 @@ from nodes import (
 
 def main():
     with torch.inference_mode():
-        checkpointloadersimple = CheckpointLoaderSimple()
+        # checkpointloadersimple = CheckpointLoaderSimple()
+        checkpointloadersimple = LocalModelLoader()
+        # checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaper_8.safetensors"
         )
@@ -127,7 +125,7 @@ def main():
         vaedecode = VAEDecode()
         saveimage = SaveImage()
 
-        for q in range(10):
+        for q in range(1):
             ksampler_3 = ksampler.sample(
                 seed=random.randint(1, 2**64),
                 steps=20,

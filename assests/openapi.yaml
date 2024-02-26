@@ -1,0 +1,606 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: youremail@project.com
+  description: |-
+    API to communicate with SD server for variaous operations.
+    Some useful links:
+     - [The repository](https://github.com/karaposu/HDILOM)
+     - [Confluence page](https://github.com/karaposu/HDILOM)
+  title: SD app
+  version: 1.0.0
+servers:
+- url: https://api_server_address.com/api/v1
+- url: https://api_server_address.com/api/v2
+security:
+- ApiKeyAuth: []
+tags:
+- description: used to generate images
+  name: text-to-image-generation
+- description: used to manipulate images
+  name: image-manipulator
+paths:
+  /text-to-image-generation:
+    post:
+      operationId: textToImageGenerator
+      parameters:
+      - description: API key needed to authorize requests.
+        explode: false
+        in: header
+        name: X-API-KEY
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageGenerationRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageGenerationResponse'
+          description: Image processed successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request. The request body is not correctly structured or
+            contains invalid parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error. An error occurred on the server while
+            processing the request.
+      summary: Process an image according to specified parameters.
+      tags:
+      - text-to-image-generation
+  /image-manipulation:
+    post:
+      operationId: imageManipulator
+      parameters:
+      - description: API key needed to authorize requests.
+        explode: false
+        in: header
+        name: X-API-KEY
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageManipulationRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageManipulationResponse'
+          description: Image processed successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request. The request body is not correctly structured or
+            contains invalid parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error. An error occurred on the server while
+            processing the request.
+      summary: Process an image according to specified parameters.
+      tags:
+      - image-manipulator
+  /register:
+    post:
+      operationId: registerUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/registerUser_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/registerUser_200_response'
+          description: Registration successful.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request. The request body is not correctly structured or
+            contains invalid parameters.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error. An error occurred on the server while
+            processing the request.
+      summary: Register a new user.
+  /increase-limit:
+    post:
+      operationId: increaseUserLimit
+      parameters:
+      - description: API key needed to authorize requests.
+        explode: false
+        in: header
+        name: X-API-KEY
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/increaseUserLimit_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/increaseUserLimit_200_response'
+          description: Limit increase successful.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request. The request body is not correctly structured or
+            contains invalid parameters.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error. An error occurred on the server while
+            processing the request.
+      summary: Increase user's limit upon payment.
+  /healthcheck:
+    get:
+      operationId: healthcheck
+      responses:
+        "200":
+          description: healthcheck.
+      summary: healtcheck
+      tags:
+      - healtcheck
+  /source-monitoring:
+    get:
+      operationId: sourceMonitoring
+      parameters:
+      - description: API key needed to authorize requests.
+        explode: false
+        in: header
+        name: X-API-KEY
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Image processed successfully.
+      summary: "source monitoring for Disk space and, memory usage, GPU usage,  queue\
+        \ lengths"
+      tags:
+      - source monitoring
+components:
+  schemas:
+    ImageManipulationRequest:
+      example:
+        data:
+        - image: image
+          text: text
+        - image: image
+          text: text
+        operation:
+          operation_name: operation_name
+          package_sent_time: package_sent_time
+          link: https://openapi-generator.tech
+          counter: 0
+          userid: userid
+        config:
+          settings:
+          - setting2: setting2
+            setting1: setting1
+          - setting2: setting2
+            setting1: setting1
+      properties:
+        operation:
+          $ref: '#/components/schemas/Operation'
+        config:
+          $ref: '#/components/schemas/Config'
+        data:
+          items:
+            $ref: '#/components/schemas/ImageManipulationRequestData'
+          title: data
+          type: array
+      required:
+      - config
+      - data
+      - operation
+      title: ImageManipulationRequest
+      type: object
+    ImageGenerationRequest:
+      example:
+        data: data
+        operation:
+          operation_name: operation_name
+          package_sent_time: package_sent_time
+          link: https://openapi-generator.tech
+          counter: 0
+          userid: userid
+        config:
+          settings:
+          - setting2: setting2
+            setting1: setting1
+          - setting2: setting2
+            setting1: setting1
+      properties:
+        operation:
+          $ref: '#/components/schemas/Operation'
+        config:
+          $ref: '#/components/schemas/Config'
+        data:
+          title: data
+          type: string
+      required:
+      - config
+      - data
+      - operation
+      title: ImageGenerationRequest
+      type: object
+    ImageGenerationResponse:
+      example:
+        data:
+          images:
+          - result: result
+          - result: result
+          total_time: 6
+        operation:
+          success: true
+          package_sent_time: package_sent_time
+          error_code: error_code
+          counter: 0
+          debug_log: debug_log
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationStatus'
+        data:
+          $ref: '#/components/schemas/ImagesData'
+      title: ImageGenerationResponse
+      type: object
+    Operation:
+      example:
+        operation_name: operation_name
+        package_sent_time: package_sent_time
+        link: https://openapi-generator.tech
+        counter: 0
+        userid: userid
+      properties:
+        userid:
+          title: userid
+          type: string
+        package_sent_time:
+          title: package_sent_time
+          type: string
+        counter:
+          title: counter
+          type: integer
+        link:
+          format: uri
+          title: link
+          type: string
+        operation_name:
+          title: operation_name
+          type: string
+      title: Operation
+      type: object
+    Config:
+      example:
+        settings:
+        - setting2: setting2
+          setting1: setting1
+        - setting2: setting2
+          setting1: setting1
+      properties:
+        settings:
+          items:
+            $ref: '#/components/schemas/Config_settings_inner'
+          title: settings
+          type: array
+      title: Config
+      type: object
+    ImageManipulationRequestData:
+      example:
+        image: image
+        text: text
+      properties:
+        image:
+          title: image
+          type: string
+        text:
+          title: text
+          type: string
+      title: ImageManipulationRequestData
+      type: object
+    ImageResult:
+      example:
+        result: result
+      properties:
+        result:
+          description: The processed image data or reference.
+          title: result
+          type: string
+      title: ImageResult
+      type: object
+    ImagesData:
+      example:
+        images:
+        - result: result
+        - result: result
+        total_time: 6
+      properties:
+        images:
+          items:
+            $ref: '#/components/schemas/ImageResult'
+          title: images
+          type: array
+        total_time:
+          description: The total time taken for processing the images in seconds.
+          title: total_time
+          type: integer
+      title: ImagesData
+      type: object
+    OperationStatus:
+      example:
+        success: true
+        package_sent_time: package_sent_time
+        error_code: error_code
+        counter: 0
+        debug_log: debug_log
+      properties:
+        success:
+          description: Indicates if the operation was successful.
+          title: success
+          type: boolean
+        error_code:
+          description: "An error code if the operation failed, otherwise null."
+          nullable: true
+          title: error_code
+          type: string
+        debug_log:
+          description: "Debug log information if available, otherwise null."
+          nullable: true
+          title: debug_log
+          type: string
+        package_sent_time:
+          description: The time the package was sent.
+          format: time
+          title: package_sent_time
+          type: string
+        counter:
+          description: A counter value associated with the operation.
+          title: counter
+          type: integer
+      title: OperationStatus
+      type: object
+    ImageManipulationResponse:
+      example:
+        data:
+          images:
+          - result: result
+          - result: result
+          total_time: 6
+        operation:
+          success: true
+          package_sent_time: package_sent_time
+          error_code: error_code
+          counter: 0
+          debug_log: debug_log
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationStatus'
+        data:
+          $ref: '#/components/schemas/ImagesData'
+      title: ImageManipulationResponse
+      type: object
+    ErrorResponse:
+      example:
+        errorCode: errorCode
+        details:
+        - field: field
+          issue: issue
+        - field: field
+          issue: issue
+        message: message
+      properties:
+        errorCode:
+          description: A unique identifier for the type of error encountered.
+          title: errorCode
+          type: string
+        message:
+          description: A human-readable message providing more details about the error.
+          title: message
+          type: string
+        details:
+          description: An optional array of detail objects for errors related to specific
+            parts of the request. This can be useful for form validation errors.
+          items:
+            $ref: '#/components/schemas/ErrorResponse_details_inner'
+          title: details
+          type: array
+      required:
+      - errorCode
+      - message
+      title: ErrorResponse
+      type: object
+    registerUser_request_platform:
+      properties:
+        os:
+          description: The operating system where the app is installed.
+          title: os
+          type: string
+        version:
+          description: The version of the operating system.
+          title: version
+          type: string
+      required:
+      - os
+      - version
+      title: registerUser_request_platform
+      type: object
+    registerUser_request:
+      properties:
+        appVersion:
+          description: The version of the app.
+          title: appVersion
+          type: string
+        installationId:
+          description: A unique identifier for the app installation.
+          title: installationId
+          type: string
+        timestamp:
+          description: The timestamp of the register action.
+          format: date-time
+          title: timestamp
+          type: string
+        locale:
+          description: The locale settings of the user.
+          title: locale
+          type: string
+        platform:
+          $ref: '#/components/schemas/registerUser_request_platform'
+      required:
+      - appVersion
+      - installationId
+      - locale
+      - platform
+      - timestamp
+      title: registerUser_request
+      type: object
+    registerUser_200_response:
+      example:
+        message: message
+        userId: userId
+      properties:
+        message:
+          title: message
+          type: string
+        userId:
+          description: A unique identifier assigned to the user upon registration.
+          title: userId
+          type: string
+      title: registerUser_200_response
+      type: object
+    increaseUserLimit_request:
+      properties:
+        userId:
+          description: The unique identifier for the user whose limit is being increased.
+          title: userId
+          type: string
+        paymentConfirmationId:
+          description: A unique identifier confirming the payment has been processed
+            successfully.
+          title: paymentConfirmationId
+          type: string
+        newLimit:
+          description: The new limit to be applied to the user's account.
+          title: newLimit
+          type: integer
+      required:
+      - newLimit
+      - paymentConfirmationId
+      - userId
+      title: increaseUserLimit_request
+      type: object
+    increaseUserLimit_200_response:
+      example:
+        message: message
+        newLimit: 0
+      properties:
+        message:
+          title: message
+          type: string
+        newLimit:
+          description: The updated limit for the user's account.
+          title: newLimit
+          type: integer
+      title: increaseUserLimit_200_response
+      type: object
+    Config_settings_inner:
+      example:
+        setting2: setting2
+        setting1: setting1
+      properties:
+        setting1:
+          description: setting1
+          title: setting1
+          type: string
+        setting2:
+          description: setting2
+          title: setting2
+          type: string
+      title: Config_settings_inner
+      type: object
+    ErrorResponse_details_inner:
+      example:
+        field: field
+        issue: issue
+      properties:
+        field:
+          description: The field in the request that caused the error.
+          title: field
+          type: string
+        issue:
+          description: A description of the problem with the field.
+          title: issue
+          type: string
+      required:
+      - field
+      - issue
+      title: ErrorResponse_details_inner
+      type: object
+  securitySchemes:
+    ApiKeyAuth:
+      description: API key needed to authorize requests.
+      in: header
+      name: X-API-KEY
+      type: apiKey

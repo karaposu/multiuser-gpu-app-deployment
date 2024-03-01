@@ -35,11 +35,6 @@ import folder_paths
 import latent_preview
 
 
-from data_access_interfaces import ModelLoader
-from typing import Any
-
-
-
 def before_node_execution():
     comfy.model_management.throw_exception_if_processing_interrupted()
 

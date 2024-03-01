@@ -1,8 +1,17 @@
+from dotenv import load_dotenv
 import os
 import random
 import sys
 from typing import Sequence, Mapping, Any, Union
 import torch
+
+
+from nodes import CheckpointLoaderSimple
+from data_access_impl import LocalModelLoader, GoogleCloudStorageModelLoader
+
+load_dotenv()
+environment = os.getenv('APP_ENVIRONMENT')
+bucket_name = os.getenv('GOOGLE_CLOUD_STORAGE_BUCKET')
 
 
 
@@ -89,13 +98,19 @@ from src.openapi_server.apis.nodes import (
     VAEDecode,
     KSampler,
     EmptyLatentImage,
-    CheckpointLoaderSimple,
 )
 
 
-def main():
+
+def main(text, filename_prefix):
     with torch.inference_mode():
-        checkpointloadersimple = CheckpointLoaderSimple()
+        if environment == "original_code" :
+           checkpointloadersimple = CheckpointLoaderSimple()
+        elif environment == "development":
+            checkpointloadersimple = LocalModelLoader()
+        elif environment == "cloud" :
+            checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name=bucket_name)
+
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaper_8.safetensors"
         )
@@ -107,7 +122,7 @@ def main():
 
         cliptextencode = CLIPTextEncode()
         cliptextencode_6 = cliptextencode.encode(
-            text="beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
+            text=text,
             clip=get_value_at_index(checkpointloadersimple_4, 1),
         )
 
@@ -119,7 +134,7 @@ def main():
         vaedecode = VAEDecode()
         saveimage = SaveImage()
 
-        for q in range(10):
+        for q in range(1):
             ksampler_3 = ksampler.sample(
                 seed=random.randint(1, 2**64),
                 steps=20,
@@ -139,9 +154,11 @@ def main():
             )
 
             saveimage_9 = saveimage.save_images(
-                filename_prefix="ComfyUI", images=get_value_at_index(vaedecode_8, 0)
+                filename_prefix=filename_prefix, images=get_value_at_index(vaedecode_8, 0)
             )
 
 
 if __name__ == "__main__":
-    main()
+    text_description = "beautiful scenery nature glass bottle landscape, purple galaxy bottle,"
+    filename_prefix = "ComfyUI"
+    main(text=text_description, filename_prefix=filename_prefix)

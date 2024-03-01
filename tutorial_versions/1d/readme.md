@@ -16,9 +16,8 @@ In the end of first cycle,
 
 
 1. **Run your already existing app.py and take notes of system and GPU loads**
-2. **Turn your SD app into a callable function**
-3. **Abstract the Data Access Layer**
-4. **Redesign your app.py to use env variables as feature flags** (local, cloud, test, prod...)
+2. **Abstract the Data Access Layer**
+3. **Redesign your app.py to use env variables as feature flags** (local, cloud, test, prod...)
    a.List all env variables you need
    b.create a .env file to handle env variables locally
    c.use python-dotenv package to load these variables into your environment

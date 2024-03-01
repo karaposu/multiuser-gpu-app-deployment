@@ -84,12 +84,11 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
-from nodes import (
+from src.openapi_server.apis.nodes import (
     CLIPTextEncode,
     SaveImage,
     VAEDecode,
     KSampler,
-    NODE_CLASS_MAPPINGS,
     EmptyLatentImage,
     CheckpointLoaderSimple,
 )

@@ -1,1 +1,7 @@
 google-cloud-storage
+python-dotenv
+uvicorn
+PyQtWebEngine
+fastapi
+pkgutil
+importlib

@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import os
 import random
 import sys
@@ -5,8 +6,13 @@ from typing import Sequence, Mapping, Any, Union
 import torch
 
 
+from nodes import CheckpointLoaderSimple
+from data_access_impl import LocalModelLoader, GoogleCloudStorageModelLoader
 
-from data_access_impl import GoogleCloudStorageModelLoader, LocalModelLoader
+load_dotenv()
+environment = os.getenv('APP_ENVIRONMENT')
+bucket_name = os.getenv('GOOGLE_CLOUD_STORAGE_BUCKET')
+
 
 
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
@@ -86,22 +92,24 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
-from nodes import (
+from src.openapi_server.apis.nodes import (
     CLIPTextEncode,
     SaveImage,
     VAEDecode,
     KSampler,
-    NODE_CLASS_MAPPINGS,
     EmptyLatentImage,
-    CheckpointLoaderSimple,
 )
 
 
 def main():
     with torch.inference_mode():
-        # checkpointloadersimple = CheckpointLoaderSimple()
-        checkpointloadersimple = LocalModelLoader()
-        # checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
+        if environment == "original_code" :
+           checkpointloadersimple = CheckpointLoaderSimple()
+        elif environment == "development":
+            checkpointloadersimple = LocalModelLoader()
+        elif environment == "cloud" :
+            checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name=bucket_name)
+
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaper_8.safetensors"
         )

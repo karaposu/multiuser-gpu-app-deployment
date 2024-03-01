@@ -6,6 +6,9 @@ import torch
 
 
 
+from data_access_impl import LocalModelLoader
+
+
 def get_value_at_index(obj: Union[Sequence, Mapping], index: int) -> Any:
     """Returns the value at the given index of a sequence or mapping.
 
@@ -89,13 +92,14 @@ from src.openapi_server.apis.nodes import (
     VAEDecode,
     KSampler,
     EmptyLatentImage,
-    CheckpointLoaderSimple,
 )
 
 
 def main():
     with torch.inference_mode():
-        checkpointloadersimple = CheckpointLoaderSimple()
+        # checkpointloadersimple = CheckpointLoaderSimple()
+        checkpointloadersimple = LocalModelLoader()
+        # checkpointloadersimple = GoogleCloudStorageModelLoader(bucket_name="your_bucket_name")
         checkpointloadersimple_4 = checkpointloadersimple.load_checkpoint(
             ckpt_name="dreamshaper_8.safetensors"
         )
@@ -119,7 +123,7 @@ def main():
         vaedecode = VAEDecode()
         saveimage = SaveImage()
 
-        for q in range(10):
+        for q in range(1):
             ksampler_3 = ksampler.sample(
                 seed=random.randint(1, 2**64),
                 steps=20,

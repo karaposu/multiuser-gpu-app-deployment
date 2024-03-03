@@ -5,3 +5,5 @@ PyQtWebEngine
 fastapi
 pkgutil
 importlib
+opencv-python
+psutil

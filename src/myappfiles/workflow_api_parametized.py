@@ -152,10 +152,12 @@ def main(text, filename_prefix):
                 samples=get_value_at_index(ksampler_3, 0),
                 vae=get_value_at_index(checkpointloadersimple_4, 2),
             )
-
+            images=get_value_at_index(vaedecode_8, 0)
             saveimage_9 = saveimage.save_images(
-                filename_prefix=filename_prefix, images=get_value_at_index(vaedecode_8, 0)
+                filename_prefix=filename_prefix, images=images
             )
+            return images
+
 
 
 if __name__ == "__main__":

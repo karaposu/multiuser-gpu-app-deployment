@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.flake8
+.openapi-generator-ignore
+setup.cfg
+
+src/.openapi-generator/FILES
+src/.openapi-generator/VERSION
+
+
+
+
 # C extensions
 *.so
 

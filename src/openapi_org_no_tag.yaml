@@ -254,13 +254,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /healthcheck:
+  /health:
     get:
       summary: healtcheck
       operationId: healthcheck
       responses:
         '200':
           description: healthcheck.
+
   /source-monitoring:
     get:
       summary: >-
@@ -277,8 +278,80 @@ paths:
       responses:
         '200':
           description: Image processed successfully.
+
+
+  /UserImageManipulationRequest:
+    post:
+      summary: Endpoint to handle user image manipulation requests.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - UserImageManipulationRequestData
+                - config
+                - operation
+              properties:
+                UserImageManipulationRequestData:
+                  type: object
+                  required:
+                    - target_image
+                    - headswapSourceObj
+                  properties:
+                    target_image:
+                      type: string
+                      description: Base64 encoded string of the target image.
+                    headswapSourceObj:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/headswapSourceObj'
+                config:
+                  $ref: '#/components/schemas/Config'
+                operation:
+                  $ref: '#/components/schemas/Operation'
+      responses:
+        '200':
+          description: Image processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageGenerationResponse'
+        '400':
+          description: >-
+            Bad request. The request body is not correctly structured or
+            contains invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. Authentication credentials are missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: >-
+            Internal Server Error. An error occurred on the server while
+            processing the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  components:
+    schemas:
+      headswapSourceObj:
+        type: object
+        required:
+
+
 security:
   - ApiKeyAuth: []
+
 components:
   schemas:
     ImageManipulationRequest:
@@ -424,6 +497,72 @@ components:
           description: >-
             An optional array of detail objects for errors related to specific
             parts of the request. This can be useful for form validation errors.
+    UserImageManipulationRequestData:
+      type: object
+      required:
+        - target_image
+        - headswapSourceObjs
+      properties:
+        target_image:
+          type: string
+          description: Base64 encoded image on which manipulation will be performed.
+        headswapSourceObjs:
+          type: array
+          items:
+            $ref: '#/components/schemas/headswapSourceObj'
+    headswapSourceObj:
+        type: object
+        required:
+          - head_img
+          - headselection_mask
+          - FD_coordinates
+          - LM_coordinates
+        properties:
+          head_img:
+            type: string
+            description: Base64 encoded image of the head to swap.
+          headselection_mask:
+            type: string
+            description: Base64 encoded mask for head selection.
+          FD_coordinates:
+            type: array
+            items:
+              type: integer
+            description: Face detection coordinates as an array of integers.
+          LM_coordinates:
+            type: object
+            required:
+              - nose_coordinates
+              - cheek_coordinates
+              - chin_coordinates
+              - eye_distance
+              - eyegap_chin_distance
+            properties:
+              nose_coordinates:
+                type: array
+                items:
+                  type: integer
+                description: Coordinates for the nose.
+              cheek_coordinates:
+                type: array
+                items:
+                  type: integer
+                description: Coordinates for the cheeks.
+              chin_coordinates:
+                type: array
+                items:
+                  type: integer
+                description: Coordinates for the chin.
+              eye_distance:
+                type: array
+                items:
+                  type: integer
+                description: Distance between the eyes as an array of integers.
+              eyegap_chin_distance:
+                type: array
+                items:
+                  type: integer
+                description: Distance from the eyegap to the chin as an array of integers.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

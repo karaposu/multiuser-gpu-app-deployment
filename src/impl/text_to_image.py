@@ -6,6 +6,8 @@ from models.image_result import ImageResult
 
 import cv2
 import base64
+# from src.myappfiles.workflow_api_parametized import main
+from myappfiles.dummy_base64_img_returner import base64_img
 def encode_img(img):
     _, img_buffer = cv2.imencode('.webp', img)
     encoded_img = base64.b64encode(img_buffer)
@@ -15,17 +17,24 @@ def encode_img(img):
 def generate_image(text: str) -> str:
     # Imagine this function generates an image based on the text and returns the image data
     # For simplicity, we're just returning a string representing the image data
-    return "image_data_based_on_" + text
+
+    #main(text=text, filename_prefix="a")
+    return base64_img
 
 def generate_image_response(text: str):
     images = generate_image(text)
-    base64_images=encode_img(images[0])
+    if not isinstance(images[0], str):
+        base64_images=encode_img(images[0])
+    else:
+        base64_images=images
     image_results = [
         ImageResult(result=base64_images),
         ImageResult(result="Image processing result 2"),
         # Add more ImageResult instances as needed
     ]
     return image_results
+
+
 
 
 def generate_image_data_response(text: str)->ImagesData:

@@ -5,7 +5,10 @@ import importlib
 import pkgutil
 from fastapi import HTTPException
 
+
+
 from apis.default_api_base import BaseDefaultApi
+from pydantic import AnyUrl, BaseModel, EmailStr, Field, validator  # n
 import impl
 
 from fastapi import (  # noqa: F401
@@ -35,10 +38,15 @@ from models.register_user_request import RegisterUserRequest
 from security_api import get_token_ApiKeyAuth
 
 from impl.text_to_image import generate_image_data_response
+from impl.image_manipulator import  generate_image_data_response
+from impl.source_monitor  import prepare_response_for_source_monitoring
+
+from impl.register_new_user import register_new_user
 
 from models.images_data import ImagesData
 from models.operation_status import OperationStatus
 from models.image_result import ImageResult
+
 #
 router = APIRouter()
 
@@ -48,7 +56,7 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
 
 
 @router.get(
-    "/healthcheck",
+    "/health",
     responses={
         200: {"description": "healthcheck."},
     },
@@ -56,12 +64,12 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     summary="healtcheck",
     response_model_by_alias=True,
 )
-async def healthcheck(
+async def health(
     token_ApiKeyAuth: TokenModel = Security(
         get_token_ApiKeyAuth
     ),
 ) -> None:
-    ...
+    return "Healthy", 200
 
 
 @router.post(
@@ -83,7 +91,17 @@ async def image_manipulator(
         get_token_ApiKeyAuth
     ),
 ) -> ImageManipulationResponse:
-    ...
+
+
+    if not image_manipulation_request.data:
+        raise HTTPException(status_code=400, detail="Text for image generation is required")
+    img=image_manipulation_request.data[0].image
+    txt = image_manipulation_request.data[0].text
+
+    images_data = generate_image_data_response(img, txt, "")
+    ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
+
+    return ImageManipulationResponse(operation=ops, data=images_data)
 
 
 @router.post(
@@ -125,7 +143,10 @@ async def register_user(
         get_token_ApiKeyAuth
     ),
 ) -> RegisterUser200Response:
-    ...
+    user_id=register_new_user(register_user_request)
+    return RegisterUser200Response(userId=user_id, message="Registration successful")
+
+
 
 
 @router.get(
@@ -143,7 +164,7 @@ async def source_monitoring(
         get_token_ApiKeyAuth
     ),
 ) -> None:
-    ...
+   return prepare_response_for_source_monitoring()
 
 
 @router.post(

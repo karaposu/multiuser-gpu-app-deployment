@@ -1,3 +1,6 @@
+
+
+
 openapi: 3.0.0
 info:
   title: SD app
@@ -13,23 +16,18 @@ info:
 servers:
   - url: https://api_server_address.com/api/v1
   - url: https://api_server_address.com/api/v2
-tags:
-  - name: text-to-image-generation
-    description: used to generate images
-  - name: image-manipulator
-    description: used to manipulate images
+# tags:
+#   - name: text-to-image-generation
+#     description: used to generate images
+#   - name: image-manipulator
+#     description: used to manipulate images
 paths:
-  /text-to-image-generation:
+  /v1/text-to-image-generation:
     post:
       summary: Process an image according to specified parameters.
       operationId: textToImageGenerator
       parameters:
-        - in: header
-          name: X-API-KEY
-          schema:
-            type: string
-          required: true
-          description: API key needed to authorize requests.
+         - $ref: '#/components/parameters/ApiKeyHeader'
       requestBody:
         required: true
         content:
@@ -44,38 +42,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ImageGenerationResponse'
         '400':
-          description: >-
-            Bad request. The request body is not correctly structured or
-            contains invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+           $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Unauthorized. Authentication credentials are missing or invalid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
-          description: >-
-            Internal Server Error. An error occurred on the server while
-            processing the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /image-manipulation:
+           $ref: '#/components/responses/InternalServerError'
+
+  /template/image-manipulation:
     post:
       summary: Process an image according to specified parameters.
       operationId: imageManipulator
       parameters:
-        - in: header
-          name: X-API-KEY
-          schema:
-            type: string
-          required: true
-          description: API key needed to authorize requests.
+         - $ref: '#/components/parameters/ApiKeyHeader'
       requestBody:
         required: true
         content:
@@ -90,28 +68,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ImageManipulationResponse'
         '400':
-          description: >-
-            Bad request. The request body is not correctly structured or
-            contains invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Unauthorized. Authentication credentials are missing or invalid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
-          description: >-
-            Internal Server Error. An error occurred on the server while
-            processing the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /register:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/register:
     post:
       summary: Register a new user.
       operationId: registerUser
@@ -169,32 +132,18 @@ paths:
                       A unique identifier assigned to the user upon
                       registration.
         '400':
-          description: >-
-            Bad request. The request body is not correctly structured or
-            contains invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
-          description: >-
-            Internal Server Error. An error occurred on the server while
-            processing the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /increase-limit:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/increase-limit:
     post:
       summary: Increase user's limit upon payment.
       operationId: increaseUserLimit
       parameters:
-        - in: header
-          name: X-API-KEY
-          schema:
-            type: string
-          required: true
-          description: API key needed to authorize requests.
+         - $ref: '#/components/parameters/ApiKeyHeader'
       requestBody:
         required: true
         content:
@@ -233,28 +182,12 @@ paths:
                     type: integer
                     description: The updated limit for the user's account.
         '400':
-          description: >-
-            Bad request. The request body is not correctly structured or
-            contains invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Unauthorized. Authentication credentials are missing or invalid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
-          description: >-
-            Internal Server Error. An error occurred on the server while
-            processing the request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /health:
+          $ref: '#/components/responses/InternalServerError'
+  /v1/health:
     get:
       summary: healtcheck
       operationId: healthcheck
@@ -262,25 +195,19 @@ paths:
         '200':
           description: healthcheck.
 
-  /source-monitoring:
+  /v1/source-monitoring:
     get:
       summary: >-
         source monitoring for Disk space and, memory usage, GPU usage,  queue
         lengths
       operationId: sourceMonitoring
       parameters:
-        - in: header
-          name: X-API-KEY
-          schema:
-            type: string
-          required: true
-          description: API key needed to authorize requests.
+         - $ref: '#/components/parameters/ApiKeyHeader'
       responses:
         '200':
           description: Image processed successfully.
 
-
-  /UserImageManipulationRequest:
+  /v1/image-manipulations/user:
     post:
       summary: Endpoint to handle user image manipulation requests.
       requestBody:
@@ -290,25 +217,20 @@ paths:
             schema:
               type: object
               required:
-                - UserImageManipulationRequestData
+                - data
                 - config
                 - operation
               properties:
-                UserImageManipulationRequestData:
+                data:
                   type: object
                   required:
-                    - target_image
-                    - headswapSourceObj
+                    - user_image
                   properties:
-                    target_image:
+                    user_image:
                       type: string
                       description: Base64 encoded string of the target image.
-                    headswapSourceObj:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/headswapSourceObj'
                 config:
-                  $ref: '#/components/schemas/Config'
+                  $ref: '#/components/schemas/ConfigUserImageManipulation'
                 operation:
                   $ref: '#/components/schemas/Operation'
       responses:
@@ -317,36 +239,107 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImageGenerationResponse'
+                $ref: '#/components/schemas/UserImageManipulationResponse'
         '400':
-          description: >-
-            Bad request. The request body is not correctly structured or
-            contains invalid parameters.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          description: Unauthorized. Authentication credentials are missing or invalid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
-          description: >-
-            Internal Server Error. An error occurred on the server while
-            processing the request.
+          $ref: '#/components/responses/InternalServerError'
+
+  /v1/image-manipulations/web:
+    post:
+      summary: Endpoint to handle user image manipulation requests.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+                - config
+                - operation
+              properties:
+                data:
+                  $ref: '#/components/schemas/DOMImageManipulationRequestData'
+
+                config:
+                  $ref: '#/components/schemas/ImageAdjustmentConfig'
+                operation:
+                  $ref: '#/components/schemas/Operation'
+
+      responses:
+        '200':
+          description: Image processed successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/DOMImageManipulationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /share-result:
+    post:
+      summary: Share the result of image processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShareResultRequest'
+      responses:
+        '200':
+          description: Bug report submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Thank you for reporting this issue. We will investigate it as soon as possible."
+
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /report-bug:
+    post:
+      summary: Submit a bug report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/BugReportRequest'
+      responses:
+        '200':
+          description: Bug report submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Thank you for reporting this issue. We will investigate it as soon as possible."
+
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 
-  components:
-    schemas:
-      headswapSourceObj:
-        type: object
-        required:
 
 
 security:
@@ -354,6 +347,7 @@ security:
 
 components:
   schemas:
+
     ImageManipulationRequest:
       type: object
       required:
@@ -382,13 +376,104 @@ components:
           $ref: '#/components/schemas/Config'
         data:
           type: string
+
+    # DOMImageManipulationRequest:
+    #   type: object
+    #   required:
+    #     - images
+    #     - FD_coordinates
+    #     - LM_coordinates
+    #     - skincolor
+    #   properties:
+    #     images:
+    #       $ref: '#/components/schemas/ImagesData'
+    #     FD_coordinates:
+    #       type: array
+    #       items:
+    #       type: integer
+    #     LM_coordinates:
+    #       type: object
+    #       required:
+    #         - nose_coordinates
+    #         - cheek_coordinates
+    #         - chin_coordinates
+    #         - eye_distance
+    #         - eyegap_chin_distance
+    #     headswapSourceObjs:
+    #       type: array
+    #       items:
+    #         $ref: '#/components/schemas/headswapSourceObj'
+
+    DOMImageManipulationRequestData:
+      type: object
+      required:
+        # - headswapSourceObjs
+        - source_headswapObjs
+        - target_image
+      properties:
+        source_headswapObjs:
+          type: array
+          items:
+            $ref: '#/components/schemas/headswapSourceObj'
+        target_image:
+          type: string
+
+
+    DOMImageManipulationResponse:
+      type: object
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationStatus'
+        data:
+          $ref: '#/components/schemas/DOMImageManipulationResponseData'
+
+    UserImageManipulationResponse:
+      type: object
+      properties:
+        operation:
+          $ref: '#/components/schemas/OperationStatus2'
+        data:
+          $ref: '#/components/schemas/UserImageManipulationResponseData'
+
+
     ImageGenerationResponse:
       type: object
       properties:
         operation:
           $ref: '#/components/schemas/OperationStatus'
         data:
-          $ref: '#/components/schemas/ImagesData'
+          $ref: '#/components/schemas/DOMImageManipulationResponseData'
+
+    UserImageManipulationResponseData:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImagesDataforUserImageManipulationResponse'
+        FD_coordinates:
+          type: array
+          items:
+            type: integer
+        skin_color:
+          type: array
+          items:
+            type: integer
+        LM_coordinates:
+          $ref: '#/components/schemas/LM_coordinates'
+
+
+
+    DOMImageManipulationResponseData:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageResult'
+        total_time:
+          type: integer
+          description: The total time taken for the operation, in seconds.
     Operation:
       type: object
       properties:
@@ -403,6 +488,13 @@ components:
           format: uri
         operation_name:
           type: string
+
+    ConfigUserImageManipulation:
+      type: object
+      properties:
+        return_img_format:
+          type: string
+
     Config:
       type: object
       properties:
@@ -417,6 +509,40 @@ components:
               setting2:
                 type: string
                 description: setting2
+
+    ImageAdjustmentConfig:
+      type: object
+      properties:
+        ASD:
+          type: object
+          properties:
+            skincolortransfer:
+              type: integer
+              description: "Enable or disable skin color transfer."
+              enum: [0, 1]
+            headorientation:
+              type: integer
+              description: "Enable or disable head orientation adjustment."
+              enum: [0, 1]
+            hairtransfer:
+              type: integer
+              description: "Enable or disable hair transfer."
+              enum: [0, 1]
+            generic_setting1:
+              type: integer
+              description: "Generic setting 1 for additional configurations."
+              enum: [0, 1]
+            generic_setting2:
+              type: integer
+              description: "Generic setting 2 for additional configurations."
+              enum: [0, 1]
+        return_img_format:
+          type: string
+          description: "Format in which the image should be returned."
+          enum:
+            - encoded
+          default: "encoded"
+
     ImageManipulationRequestData:
       type: object
       properties:
@@ -424,6 +550,16 @@ components:
           type: string
         text:
           type: string
+    ImagesDataforUserImageManipulationResponse:
+      type: object
+      properties:
+        head:
+          type: string
+        headselection_mask:
+          type: string
+        head_transparent:
+          type: string
+
     ImageResult:
       type: object
       properties:
@@ -440,6 +576,30 @@ components:
         total_time:
           type: integer
           description: The total time taken for processing the images in seconds.
+
+    OperationStatus2:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the operation was successful.
+        error_code:
+          type: string
+          nullable: true
+          description: An error code if the operation failed, otherwise null.
+        debug_log:
+          type: string
+          nullable: true
+          description: Debug log information if available, otherwise null.
+        package_sent_time:
+          type: string
+          format: time
+          description: The time the package was sent.
+        extra_field:
+          type: string
+          description: The time the package was sent.
+
+
     OperationStatus:
       type: object
       properties:
@@ -461,6 +621,7 @@ components:
         counter:
           type: integer
           description: A counter value associated with the operation.
+
     ImageManipulationResponse:
       type: object
       properties:
@@ -468,6 +629,7 @@ components:
           $ref: '#/components/schemas/OperationStatus'
         data:
           $ref: '#/components/schemas/ImagesData'
+
     ErrorResponse:
       type: object
       required:
@@ -497,19 +659,41 @@ components:
           description: >-
             An optional array of detail objects for errors related to specific
             parts of the request. This can be useful for form validation errors.
-    UserImageManipulationRequestData:
+
+    
+
+    ShareResultRequest:
       type: object
-      required:
-        - target_image
-        - headswapSourceObjs
       properties:
-        target_image:
-          type: string
-          description: Base64 encoded image on which manipulation will be performed.
-        headswapSourceObjs:
-          type: array
-          items:
-            $ref: '#/components/schemas/headswapSourceObj'
+        operation:
+            $ref: '#/components/schemas/Operation'
+        data:
+          type: object
+          required:
+            - FSCD
+            - headswapped_image
+          properties:
+            FSCD:
+              type: object
+              properties:
+                Include_org_img:
+                  type: integer
+                  enum: [ 0, 1 ]
+                  example: 0
+                Include_qr:
+                  type: integer
+                  enum: [ 0, 1 ]
+                  example: 0
+                placeholder:
+                  type: integer
+                  enum: [ 0, 1 ]
+                  example: 0
+            headswapped_image:
+              type: string
+              format: byte
+              example: "UklGRtAeAABXRUJQVlA4WAoAAAAgAAAArAAAAgEA"
+
+
     headswapSourceObj:
         type: object
         required:
@@ -530,42 +714,93 @@ components:
               type: integer
             description: Face detection coordinates as an array of integers.
           LM_coordinates:
-            type: object
-            required:
-              - nose_coordinates
-              - cheek_coordinates
-              - chin_coordinates
-              - eye_distance
-              - eyegap_chin_distance
-            properties:
-              nose_coordinates:
-                type: array
-                items:
-                  type: integer
-                description: Coordinates for the nose.
-              cheek_coordinates:
-                type: array
-                items:
-                  type: integer
-                description: Coordinates for the cheeks.
-              chin_coordinates:
-                type: array
-                items:
-                  type: integer
-                description: Coordinates for the chin.
-              eye_distance:
-                type: array
-                items:
-                  type: integer
-                description: Distance between the eyes as an array of integers.
-              eyegap_chin_distance:
-                type: array
-                items:
-                  type: integer
-                description: Distance from the eyegap to the chin as an array of integers.
+            $ref: '#/components/schemas/LM_coordinates'
+
+    LM_coordinates:
+      type: object
+      properties:
+        betweeneyes:
+          type: array
+          items:
+            type: integer
+        nose_coordinates:
+          type: array
+          items:
+            type: integer
+          description: "An array of two integers representing the X and Y coordinates of the nose."
+          example: [ 10, 10 ]
+        cheek_coordinates:
+          type: array
+          items:
+            type: integer
+          description: "An array of two integers representing the X and Y coordinates of the cheek."
+          example: [ 10, 10 ]
+        chin_coordinates:
+          type: array
+          items:
+            type: integer
+          description: "An array of two integers representing the X and Y coordinates of the chin."
+          example: [ 10, 10 ]
+        eye_distance:
+          type: integer
+          description: "The distance between the eyes."
+          example: 10
+        eyegap_chin_distance:
+          type: integer
+          description: "The distance from the gap between the eyes to the chin."
+          example: 20
+      required:
+        - nose_coordinates
+        - cheek_coordinates
+        - chin_coordinates
+        - eye_distance
+        - eyegap_chin_distance
+      description: "Coordinates and distances defining key facial landmarks."
+
+    BugReportRequest:
+      type: object
+      properties:
+        operation:
+            $ref: '#/components/schemas/Operation'
+        data:
+          type: object
+          properties:
+            textfield:
+              type: string
+              example: "headswapped image is looking weird"
+
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
       description: API key needed to authorize requests.
+
+  parameters:
+    ApiKeyHeader:
+      in: header
+      name: X-API-KEY
+      schema:
+        type: string
+      required: true
+      description: API key needed to authorize requests.
+
+  responses:
+    BadRequestError:
+      description: Bad request. The request body is not correctly structured or contains invalid parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnauthorizedError:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Internal Server Error. An error occurred on the server while processing the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

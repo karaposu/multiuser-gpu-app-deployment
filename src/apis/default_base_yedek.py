@@ -2,8 +2,6 @@
 
 from typing import ClassVar, Dict, List, Tuple  # noqa: F401
 
-from models.bug_report_request import BugReportRequest
-from models.dom_image_manipulation_response import DOMImageManipulationResponse
 from models.error_response import ErrorResponse
 from models.image_generation_request import ImageGenerationRequest
 from models.image_generation_response import ImageGenerationResponse
@@ -13,11 +11,6 @@ from models.increase_user_limit200_response import IncreaseUserLimit200Response
 from models.increase_user_limit_request import IncreaseUserLimitRequest
 from models.register_user200_response import RegisterUser200Response
 from models.register_user_request import RegisterUserRequest
-from models.share_result_post200_response import ShareResultPost200Response
-from models.share_result_request import ShareResultRequest
-from models.user_image_manipulation_response import UserImageManipulationResponse
-from models.v1_image_manipulations_user_post_request import V1ImageManipulationsUserPostRequest
-from models.v1_image_manipulations_web_post_request import V1ImageManipulationsWebPostRequest
 from security_api import get_token_ApiKeyAuth
 
 class BaseDefaultApi:
@@ -55,20 +48,6 @@ class BaseDefaultApi:
         ...
 
 
-    def report_bug_post(
-        self,
-        bug_report_request: BugReportRequest,
-    ) -> ShareResultPost200Response:
-        ...
-
-
-    def share_result_post(
-        self,
-        share_result_request: ShareResultRequest,
-    ) -> ShareResultPost200Response:
-        ...
-
-
     def source_monitoring(
         self,
         x_api_key: str,
@@ -81,18 +60,4 @@ class BaseDefaultApi:
         x_api_key: str,
         image_generation_request: ImageGenerationRequest,
     ) -> ImageGenerationResponse:
-        ...
-
-
-    def v1_image_manipulations_user_post(
-        self,
-        v1_image_manipulations_user_post_request: V1ImageManipulationsUserPostRequest,
-    ) -> UserImageManipulationResponse:
-        ...
-
-
-    def v1_image_manipulations_web_post(
-        self,
-        v1_image_manipulations_web_post_request: V1ImageManipulationsWebPostRequest,
-    ) -> DOMImageManipulationResponse:
         ...

@@ -8,6 +8,8 @@ import cv2
 import base64
 # from src.myappfiles.workflow_api_parametized import main
 from myappfiles.dummy_base64_img_returner import base64_img
+from myappfiles.workflow_api_parametized import main
+
 def encode_img(img):
     _, img_buffer = cv2.imencode('.webp', img)
     encoded_img = base64.b64encode(img_buffer)

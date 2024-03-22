@@ -3,6 +3,10 @@ import uuid
 from models.register_user_request import RegisterUserRequest
 from models.register_user200_response import RegisterUser200Response
 
+# from models.register_extension_request import RegisterExtensionRequest
+# from models.register_extension200_response import RegisterExtension200Response
+#
+
 
 def register_new_user(request: RegisterUserRequest) -> RegisterUser200Response:
     """

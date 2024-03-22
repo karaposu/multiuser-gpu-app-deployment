@@ -1,0 +1,40 @@
+asyncapi: '2.3.0'
+info:
+  title: Image Processing WebSocket API
+#  https://studio. asyncapi.com/
+  version: '1.0.0'
+  description: This API allows clients to connect via WebSocket to receive real-time updates on image processing tasks.
+servers:
+  production:
+    url: wss://example.com/ws
+    protocol: wss
+channels:
+  '/ws/{task_id}':
+    parameters:
+      task_id:
+        description: Unique identifier for the image processing task
+        schema:
+          type: string
+    subscribe:
+      summary: Subscribe to get updates on an image processing task
+      operationId: receiveTaskUpdates
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [processing, completed]
+            progress:
+              type: integer
+              format: int32
+              description: Progress percentage of the image processing task
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+security:
+  - apiKeyAuth: []

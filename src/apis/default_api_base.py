@@ -11,13 +11,13 @@ from models.image_manipulation_request import ImageManipulationRequest
 from models.image_manipulation_response import ImageManipulationResponse
 from models.increase_user_limit200_response import IncreaseUserLimit200Response
 from models.increase_user_limit_request import IncreaseUserLimitRequest
+from models.mandomimage_post_request import MANDOMIMAGEPostRequest
+from models.manusrimage_post_request import MANUSRIMAGEPostRequest
 from models.register_user200_response import RegisterUser200Response
 from models.register_user_request import RegisterUserRequest
 from models.share_result_post200_response import ShareResultPost200Response
 from models.share_result_request import ShareResultRequest
 from models.user_image_manipulation_response import UserImageManipulationResponse
-from models.v1_image_manipulations_user_post_request import V1ImageManipulationsUserPostRequest
-from models.v1_image_manipulations_web_post_request import V1ImageManipulationsWebPostRequest
 from security_api import get_token_ApiKeyAuth
 
 class BaseDefaultApi:
@@ -45,6 +45,20 @@ class BaseDefaultApi:
         x_api_key: str,
         increase_user_limit_request: IncreaseUserLimitRequest,
     ) -> IncreaseUserLimit200Response:
+        ...
+
+
+    def m_andomimage_post(
+        self,
+        mandomimage_post_request: MANDOMIMAGEPostRequest,
+    ) -> DOMImageManipulationResponse:
+        ...
+
+
+    def m_anusrimage_post(
+        self,
+        manusrimage_post_request: MANUSRIMAGEPostRequest,
+    ) -> UserImageManipulationResponse:
         ...
 
 
@@ -81,18 +95,4 @@ class BaseDefaultApi:
         x_api_key: str,
         image_generation_request: ImageGenerationRequest,
     ) -> ImageGenerationResponse:
-        ...
-
-
-    def v1_image_manipulations_user_post(
-        self,
-        v1_image_manipulations_user_post_request: V1ImageManipulationsUserPostRequest,
-    ) -> UserImageManipulationResponse:
-        ...
-
-
-    def v1_image_manipulations_web_post(
-        self,
-        v1_image_manipulations_web_post_request: V1ImageManipulationsWebPostRequest,
-    ) -> DOMImageManipulationResponse:
         ...

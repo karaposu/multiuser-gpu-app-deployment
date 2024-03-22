@@ -8,7 +8,7 @@ import cv2
 import base64
 # from src.myappfiles.workflow_api_parametized import main
 from myappfiles.dummy_base64_img_returner import base64_img
-from myappfiles.workflow_api_parametized import main
+# from myappfiles.workflow_api_parametized import main
 
 def encode_img(img):
     _, img_buffer = cv2.imencode('.webp', img)
@@ -39,7 +39,7 @@ def generate_image_response(text: str):
 
 
 
-def generate_image_data_response(text: str)->ImagesData:
+def generate_image_data_response_for_text_to_image(text: str)->ImagesData:
     image_results=generate_image_response(text)
     images_data = ImagesData(
         images=image_results,

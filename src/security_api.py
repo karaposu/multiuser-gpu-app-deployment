@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from typing import List
-from fastapi import HTTPException
+
 from fastapi import Depends, Security  # noqa: F401
 from fastapi.openapi.models import OAuthFlowImplicit, OAuthFlows  # noqa: F401
 from fastapi.security import (  # noqa: F401
@@ -17,9 +17,6 @@ from fastapi.security import (  # noqa: F401
 from fastapi.security.api_key import APIKeyCookie, APIKeyHeader, APIKeyQuery  # noqa: F401
 
 from models.extra_models import TokenModel
-
-
-API_KEY = "1"  #
 
 
 def get_token_ApiKeyAuth(
@@ -38,10 +35,5 @@ def get_token_ApiKeyAuth(
     :rtype: TokenModel | None
     """
 
-    if token_api_key_header == API_KEY:
-       # return TokenModel(token="valid")  # Assuming TokenModel has a token field
-        return TokenModel(token="valid", sub ="2")
-
-    else:
-        raise HTTPException(status_code=403, detail="Invalid API key")
+    ...
 

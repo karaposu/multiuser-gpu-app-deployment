@@ -1,6 +1,44 @@
 import psutil
 from pydantic import AnyUrl, BaseModel, EmailStr, Field
 
+
+
+class IncreaseLimitOperation:
+    # dom_image_manipulation_operation
+    def __init__(self, request, cache):
+        self.request = request
+        self.cache = cache
+        self.unpacked = self.unpack_increase_limit_package()
+        self.response= self.process_increase_limit_request()
+
+    # DATA_IS_VALID, unpacked_data = unpack_dom_image_package(mandomimage_post_request)
+    def check_compatibility(self, user_id, payment_confirmation_id, new_limit):
+        return True
+    def unpack_increase_limit_package(self):
+        user_id = self.request.user_id
+        payment_confirmation_id = self.request.payment_confirmation_id
+        new_limit = self.request.new_limit
+        COMPATIBLE=self.check_compatibility(user_id,payment_confirmation_id,new_limit  )
+
+        unpacked= {"COMPATIBLE": COMPATIBLE,
+                             "user_id": user_id,
+                             "payment_confirmation_id": payment_confirmation_id,
+                             "new_limit": new_limit}
+        return unpacked
+
+    def increase_limit(self):
+        COMPATIBLE=self.unpacked["COMPATIBLE"]
+        user_id = self.unpacked["user_id"]
+        payment_confirmation_id = self.unpacked["payment_confirmation_id"]
+        new_limit = self.unpacked["new_limit"]
+
+        if COMPATIBLE:
+            return True
+        else:
+            pass
+
+
+
 def payment_verification_function():
     pass
 

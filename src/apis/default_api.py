@@ -98,15 +98,7 @@ async def image_manipulator(
     rh = RequestHandler()
     return rh.handle_image_manipulation_request(image_manipulation_request)
 
-    if not image_manipulation_request.data:
-        raise HTTPException(status_code=400, detail="Text for image generation is required")
-    img = image_manipulation_request.data[0].image
-    txt = image_manipulation_request.data[0].text
 
-    images_data = generate_image_data_response(img, txt, "")
-    ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
-
-    return ImageManipulationResponse(operation=ops, data=images_data)
 
 @router.post(
     "/v1/increase-limit",
@@ -127,8 +119,8 @@ async def increase_user_limit(
         get_token_ApiKeyAuth
     ),
 ) -> IncreaseUserLimit200Response:
-    ...
-
+    rh = RequestHandler()
+    return rh.handle_increase_user_limit_request(increase_user_limit_request)
 
 @router.post(
     "/MAN_DOM_IMAGE/",
@@ -166,22 +158,15 @@ async def mandomimage_post(
     summary="Endpoint to extract head part from the user image.",
     response_model_by_alias=True,
 )
-async def m_anusrimage_post(
+async def manusrimage_post(
     manusrimage_post_request: MANUSRIMAGEPostRequest = Body(None, description=""),
     token_ApiKeyAuth: TokenModel = Security(
         get_token_ApiKeyAuth
     ),
 ) -> UserImageManipulationResponse:
-    if not manusrimage_post_request.data:
-        raise HTTPException(status_code=400, detail="Text for image generation is required")
-        # img = image_manipulation_request.data[0].image
+    rh = RequestHandler()
+    return rh.handle_dom_image_manipulation_request(manusrimage_post_request)
 
-    data = manusrimage_post_request.data
-    images_data = generate_cabinit_usr_img_man_data_response(data)
-    ## images_data = generate_image_data_response(img, txt, "")
-    ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
-    #
-    return DOMImageManipulationResponse(operation=ops, data=images_data)
 
 @router.post(
     "/v1/register",
@@ -201,8 +186,8 @@ async def register_user(
         get_token_ApiKeyAuth
     ),
 ) -> RegisterUser200Response:
-    user_id = register_new_user(register_user_request)
-    return RegisterUser200Response(userId=user_id, message="Registration successful")
+    rh = RequestHandler()
+    return rh.handle_register_user_request(register_user_request)
 
 
 @router.post(
@@ -223,7 +208,8 @@ async def report_bug_post(
         get_token_ApiKeyAuth
     ),
 ) -> ShareResultPost200Response:
-    ...
+    rh = RequestHandler()
+    return rh.handle_report_bug_request(bug_report_request)
 
 
 @router.post(
@@ -262,8 +248,8 @@ async def source_monitoring(
         get_token_ApiKeyAuth
     ),
 ) -> None:
-    ...
-
+    rh = RequestHandler()
+    return rh.handle_source_monitoring_request()
 
 @router.post(
     "/v1/text-to-image-generation",
@@ -284,4 +270,5 @@ async def text_to_image_generator(
         get_token_ApiKeyAuth
     ),
 ) -> ImageGenerationResponse:
-    ...
+    rh = RequestHandler()
+    return rh.handle_text_to_image_request(image_generation_request)

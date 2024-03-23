@@ -1,8 +1,31 @@
+from models.images_data import ImagesData
+from models.image_result import ImageResult
+from models.operation_status import OperationStatus
+
 from models.mandomimage_post_request import MANDOMIMAGEPostRequest
 from models.dom_image_manipulation_response import DOMImageManipulationResponse
 from models.image_manipulation_response import ImageManipulationResponse
+from models.increase_user_limit200_response import IncreaseUserLimit200Response
+from models.manusrimage_post_request import MANUSRIMAGEPostRequest
+from models.user_image_manipulation_response import UserImageManipulationResponse
+from models.increase_user_limit_request import IncreaseUserLimitRequest
+from models.register_user_request import RegisterUserRequest
+from models.register_user200_response import RegisterUser200Response
 
-from impl.image_manipulator import process_dom_image_manipulation_request, DomImageManipulationOperation, ImageManipulationOperation
+from models.image_generation_request import ImageGenerationRequest
+from models.image_generation_response import ImageGenerationResponse
+
+from impl.image_manipulator import  DomImageManipulationOperation, ImageManipulationOperation, UsrImageManipulationOperation
+from impl.increasing_limit import  IncreaseLimitOperation
+from impl.register_new_user import  RegisterOperation
+from impl.source_monitor import SourceMonitoringOperation
+
+from impl.text_to_image import TextToImageOperation
+
+
+from models.bug_report_request import BugReportRequest
+
+
 
 
 from datetime import datetime
@@ -68,6 +91,62 @@ class RequestHandler:
     def check_metadata_validity(self, meta_data):
         return True
 
+
+    def handle_text_to_image_request(self, request: ImageGenerationRequest) -> ImageGenerationResponse:
+        op_valid=self.op_validity(request.operation)
+        if not op_valid:
+            ops = OperationStatus(success="false", error_code="", debug_log="", package_sent_time="", counter=12)
+            images_data =""
+        else:
+            business_logic= TextToImageOperation(request)
+            images_data=business_logic.response
+
+            ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
+        return ImageGenerationResponse(operation=ops, data=images_data)
+
+
+    def handle_source_monitoring_request(self):
+
+        business_logic = SourceMonitoringOperation()
+        return SourceMonitoringOperation.prepare_response_for_source_monitoring()
+
+
+
+    # app_version: str = Field(alias="appVersion")
+
+    def handle_report_bug_request(self, request: BugReportRequest) -> RegisterUser200Response:
+        # app_version: str = Field(alias="appVersion")
+        # installation_id: str = Field(alias="installationId")
+        # timestamp: datetime = Field(alias="timestamp")
+        # locale: str = Field(alias="locale")
+        # platform: RegisterUserRequestPlatform = Field(alias="platform")
+
+        # business_logic = RegisterOperation(request)
+        # user_id = business_logic.user_id
+        return ""
+
+    def handle_register_user_request(self, request: RegisterUserRequest) -> RegisterUser200Response:
+        # app_version: str = Field(alias="appVersion")
+        # installation_id: str = Field(alias="installationId")
+        # timestamp: datetime = Field(alias="timestamp")
+        # locale: str = Field(alias="locale")
+        # platform: RegisterUserRequestPlatform = Field(alias="platform")
+
+            business_logic= RegisterOperation(request)
+            user_id=business_logic.user_id
+            return RegisterUser200Response(message="succesful", user_id=user_id)
+
+
+    def handle_increase_user_limit_request(self, request: IncreaseUserLimitRequest) -> IncreaseUserLimit200Response:
+        op_valid=self.op_validity(request.operation)
+        if not op_valid:
+            ops = OperationStatus(success="false", error_code="", debug_log="", package_sent_time="", counter=12)
+        else:
+            business_logic= IncreaseLimitOperation(request)
+            success=business_logic.response
+            if success:
+                return IncreaseUserLimit200Response(message="succesful", newLimit=100)
+
     def handle_image_manipulation_request(self, request: MANDOMIMAGEPostRequest) -> DOMImageManipulationResponse:
         op_valid=self.op_validity(request.operation)
         if not op_valid:
@@ -80,6 +159,16 @@ class RequestHandler:
             ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
         return ImageManipulationResponse(operation=ops, data=images_data)
 
+    def handle_usr_image_manipulation_request(self, request: MANUSRIMAGEPostRequest) -> UserImageManipulationResponse:
+        op_valid = self.op_validity(request.operation)
+        if not op_valid:
+            ops = OperationStatus(success="false", error_code="", debug_log="", package_sent_time="", counter=12)
+            images_data = ""
+        else:
+            p = UsrImageManipulationOperation(request)
+            data = p.response
+            ops = OperationStatus(success="true", error_code="", debug_log="", package_sent_time="", counter=12)
+        return UserImageManipulationResponse(operation=ops, data=data)
 
     def handle_dom_image_manipulation_request(self, request: MANDOMIMAGEPostRequest) -> DOMImageManipulationResponse:
         op_valid=self.op_validity(request.operation)

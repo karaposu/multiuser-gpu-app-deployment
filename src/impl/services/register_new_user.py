@@ -6,14 +6,22 @@ from models.register_user200_response import RegisterUser200Response
 # from models.register_extension_request import RegisterExtensionRequest
 # from models.register_extension200_response import RegisterExtension200Response
 #
-class RegisterOperation:
-    def __init__(self, request):
-        self.request = request
-        self.register_new_user()
-        # self.unpacked = self.unpack_user_manipulation_package()
-        # self.response = self.process_user_manipulation_request()
 
-    def register_new_user(self) -> RegisterUser200Response:
+from .base_service import BaseService
+class RegisterService(BaseService):
+    def process_request(self):
+        user_id = self.register_new_user()
+        self.response = user_id
+        return user_id
+
+    def check_compatibility(self):
+        pass
+
+
+    def preprocess_request_data(self):
+        pass
+
+    def register_new_user(self):
         """
         Register a new user with the provided details.
 

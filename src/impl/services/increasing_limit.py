@@ -1,42 +1,43 @@
 import psutil
 from pydantic import AnyUrl, BaseModel, EmailStr, Field
 
+from .base_service import BaseService
 
+class IncreaseLimitService(BaseService):
 
-class IncreaseLimitOperation:
-    # dom_image_manipulation_operation
-    def __init__(self, request, cache):
-        self.request = request
-        self.cache = cache
-        self.unpacked = self.unpack_increase_limit_package()
-        self.response= self.process_increase_limit_request()
-
-    # DATA_IS_VALID, unpacked_data = unpack_dom_image_package(mandomimage_post_request)
-    def check_compatibility(self, user_id, payment_confirmation_id, new_limit):
+    def check_compatibility(self):
+        # a=(user_id,payment_confirmation_id, new_limit)
+        self.user_id
         return True
-    def unpack_increase_limit_package(self):
-        user_id = self.request.user_id
-        payment_confirmation_id = self.request.payment_confirmation_id
-        new_limit = self.request.new_limit
-        COMPATIBLE=self.check_compatibility(user_id,payment_confirmation_id,new_limit  )
+    def preprocess_request_data(self):
+
+        self.user_id = self.request.user_id
+        self.payment_confirmation_id = self.request.payment_confirmation_id
+        self.new_limit = self.request.new_limit
+        COMPATIBLE=self.check_compatibility()
 
         unpacked= {"COMPATIBLE": COMPATIBLE,
-                             "user_id": user_id,
-                             "payment_confirmation_id": payment_confirmation_id,
-                             "new_limit": new_limit}
-        return unpacked
+                             "user_id": self.user_id ,
+                             "payment_confirmation_id":self.payment_confirmation_id,
+                             "new_limit": self.new_limit}
+
+        self.preprocessed_data=unpacked
 
     def increase_limit(self):
-        COMPATIBLE=self.unpacked["COMPATIBLE"]
-        user_id = self.unpacked["user_id"]
-        payment_confirmation_id = self.unpacked["payment_confirmation_id"]
-        new_limit = self.unpacked["new_limit"]
+        COMPATIBLE=self.preprocessed_data["COMPATIBLE"]
+        user_id = self.preprocessed_data["user_id"]
+        payment_confirmation_id = self.preprocessed_data["payment_confirmation_id"]
+        new_limit = self.preprocessed_data["new_limit"]
 
         if COMPATIBLE:
-            return True
+            return True, new_limit
         else:
             pass
 
+    def process_request(self):
+        success,new_limit = self.increase_limit()
+        self.response = (success,new_limit )
+        return success,new_limit
 
 
 def payment_verification_function():
@@ -93,11 +94,4 @@ def prepare_response_for_source_monitoring():
     )
 
 
-
-    return SystemMonitoringResponse(
-        disk_space_usage=f"Total: {disk_usage.total}, Used: {disk_usage.used}, Free: {disk_usage.free}",
-        memory_usage=f"Total: {memory_usage.total}, Available: {memory_usage.available}",
-        gpu_usage=gpu_usage,
-        queue_lengths=queue_lengths
-    )
 

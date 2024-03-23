@@ -12,19 +12,17 @@ from pydantic import AnyUrl, BaseModel, EmailStr, Field
 #
 # def get_queue_lengths():
 #     return "Queue lengths: 5"
-
-class SourceMonitoringOperation:
-    # dom_image_manipulation_operation
-    def __init__(self):
+from .base_service import BaseService
+class SourceMonitoringService(BaseService):
+    def check_compatibility(self):
         pass
-        # self.get_disk_space()
-        # self.get_memory_usage()
-        # self.get_gpu_usage()
-        # self.get_queue_lengths()
-        #
-        # self.unpacked = self.unpack_increase_limit_package()
-        # self.response= self.process_increase_limit_request()
 
+    def preprocess_request_data(self):
+        pass
+    def process_request(self):
+        monitor_results = self.prepare_response_for_source_monitoring()
+        self.response =monitor_results
+        return monitor_results
     def get_disk_space(self):
         self.disk_space= "Disk space usage: 75%"
         return   self.disk_space

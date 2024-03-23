@@ -10,45 +10,41 @@ import base64
 from myappfiles.dummy_base64_img_returner import base64_img
 # from myappfiles.workflow_api_parametized import main
 from models.dom_image_manipulation_response_data import DOMImageManipulationResponseData
-from utils import decode_img, encode_img
+from .utils import decode_img, encode_img
 
-
+from .base_service import BaseService
 class TextToImageService(BaseService):
-    def __init__(self, request, iie):
-        self.request = request
-        self.iie = iie
-        self.unpacked_request = self.unpack_text_to_image_package()
-        self.response= self.process_text_to_image_request()
 
     def check_compatibility(self,  img=None, text=None ):
-        return True
-    def unpack_text_to_image_package(self):
+        return True,""
+    def preprocess_request_data(self):
 
         operation = self.request.operation
         config = self.request.config
         data = self.request.data
         txt=data
-        COMPATIBLE, details  = self.check_compatibility(text=txt)
+        COMPATIBLE, details = self.check_compatibility(text=txt)
 
-        unpacked_dom_data = {"COMPATIBLE": COMPATIBLE,
-                             "txt": txt}
-        return unpacked_dom_data
+        unpacked = {"COMPATIBLE": COMPATIBLE,"txt": txt}
+
+        self.preprocessed_data = unpacked
+
 
     def make_image_generation(self):
 
-        if self.unpacked_request["COMPATIBLE"]:
+        if self.preprocessed_data["COMPATIBLE"]:
             pass
         else:
             pass
 
         return base64_img, 10
 
-    def process_text_to_image_request(self):
+    def process_request(self):
         encoded_result_image, elapsed_time = self.make_image_generation()
         # List[ImageResult]
         image_result=[ImageResult(result=encoded_result_image)]
-        self.response = DOMImageManipulationResponseData(images=image_result, total_time="")
-        return  self.response
+        self.response = DOMImageManipulationResponseData(images=image_result, total_time=10)
+
 
 
 

@@ -1,15 +1,23 @@
 from abc import ABC, abstractmethod
 
 class BaseService(ABC):
-    def __init__(self, request, dependencies):
+    def __init__(self, request, dependencies=None):
         self.request = request
         self.dependencies = dependencies
-        self.unpacked_request = None
+        self.preprocessed_data = None
+        self.compatible=False
         self.response = None
 
+        self.preprocess_request_data()
+        self.process_request()
+
+
     @abstractmethod
-    def unpack_request(self):
-        """Unpack and validate the incoming request."""
+    def preprocess_request_data(self):
+        """Unpack and validate the incoming request.and
+         edit self.preprocessed_data. self.preprocessed_data is a dict.  """
+        """check compatibility of data and edit self.compatible """
+
         pass
 
     @abstractmethod

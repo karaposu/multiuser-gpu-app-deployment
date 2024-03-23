@@ -7,14 +7,14 @@ import cv2
 
 import numpy as np
 import urllib3
-from botocore.exceptions import NoCredentialsError
-from flask import request, jsonify
-from PIL import Image, UnidentifiedImageError
+# from botocore.exceptions import NoCredentialsError
+# from flask import request, jsonify
+# from PIL import Image, UnidentifiedImageError
 
-from headswapper import HeadSwapObj
-from headswapper.headswapper import HeadSwapper
-from headswapper.utils.img_debug_helper import timer_main
-from headswapper.head_mask_creator import HeadMaskCreator
+# from headswapper import HeadSwapObj
+# from headswapper.headswapper import HeadSwapper
+# from headswapper.utils.img_debug_helper import timer_main
+# from headswapper.head_mask_creator import HeadMaskCreator
 from time import time
 
 from collections import OrderedDict
@@ -26,7 +26,7 @@ import json
 #     img = base64.b64decode(encoded_img)
 #     return img
 
-from flask import Flask, jsonify
+# from flask import Flask, jsonify
 
 import cv2
 import base64
@@ -52,29 +52,29 @@ def decode_img(encoded_img,mask=False):
 
 
 
-def make_headswapObj_from_json(headswapObj_json, iie, encoded=True):
-    img=decode_img(headswapObj_json["head_img"])
-
-    headswapObj = HeadSwapObj(
-        img,
-        iie,
-        FD_coordinates=headswapObj_json["FD_coordinates"],
-        LM_coordinates=headswapObj_json["LM_coordinates"],
-        headselection_mask=decode_img(headswapObj_json["headselection_mask"], mask=True),
-        skincolor=headswapObj_json["skincolor"]
-    )
-    headswapObj.betweeneyes_coordinates = headswapObj_json["LM_coordinates"]["betweeneyes"]
-    headswapObj.nose_coordinates = headswapObj_json["LM_coordinates"]["nose_coordinats"]
-    headswapObj.cheek_coordinates = headswapObj_json["LM_coordinates"]["cheek_coordinates"]
-    headswapObj.chin_coordinates = headswapObj_json["LM_coordinates"]["chin_coordinates"]
-    headswapObj.eye_distance = headswapObj_json["LM_coordinates"]["eye_distance"]
-    headswapObj.eyegap_chin_distance = headswapObj_json["LM_coordinates"]["eyegap_chin_distance"]
-    headswapObj.FACE_EXIST=True
-    headswapObj.LM_CALCULATED=True
-    headswapObj.LANDMARK_EXIST=True
-    HeadSwapObj.COMPATIBLE_IMAGE= True
-    HeadSwapObj.skincolor_CALCULATED= True
-    return headswapObj
+# def make_headswapObj_from_json(headswapObj_json, iie, encoded=True):
+#     img=decode_img(headswapObj_json["head_img"])
+#
+#     headswapObj = HeadSwapObj(
+#         img,
+#         iie,
+#         FD_coordinates=headswapObj_json["FD_coordinates"],
+#         LM_coordinates=headswapObj_json["LM_coordinates"],
+#         headselection_mask=decode_img(headswapObj_json["headselection_mask"], mask=True),
+#         skincolor=headswapObj_json["skincolor"]
+#     )
+#     headswapObj.betweeneyes_coordinates = headswapObj_json["LM_coordinates"]["betweeneyes"]
+#     headswapObj.nose_coordinates = headswapObj_json["LM_coordinates"]["nose_coordinats"]
+#     headswapObj.cheek_coordinates = headswapObj_json["LM_coordinates"]["cheek_coordinates"]
+#     headswapObj.chin_coordinates = headswapObj_json["LM_coordinates"]["chin_coordinates"]
+#     headswapObj.eye_distance = headswapObj_json["LM_coordinates"]["eye_distance"]
+#     headswapObj.eyegap_chin_distance = headswapObj_json["LM_coordinates"]["eyegap_chin_distance"]
+#     headswapObj.FACE_EXIST=True
+#     headswapObj.LM_CALCULATED=True
+#     headswapObj.LANDMARK_EXIST=True
+#     HeadSwapObj.COMPATIBLE_IMAGE= True
+#     HeadSwapObj.skincolor_CALCULATED= True
+#     return headswapObj
 
 
     # head = headswapObj_json["head_img"]
@@ -160,79 +160,79 @@ def check_metadata_validity(meta_data):
 
 
 
-def digest_package_content_and_make_headswap(iie, ch,  config, data, logger):
-    # ASD, domain, source_headswapObjs, format, mode, data, package_sent_time = package_content
-
-    elapsed_time = OrderedDict()
-    time0= time()
-
-    source1_data=data["source_headswapObjs"][0]
-    source_pose1 = make_headswapObj_from_json( source1_data, iie, encoded=True)
-    # source_pose2 = make_headswapObj_from_json(source1_data, iie, encoded=True)
-    # source_pose3 = make_headswapObj_from_json(source1_data, iie, encoded=True)
-
-    time1= time()
-
-
-    if  config["return_img_format"] == "encoded":
-
-        img = decode_img(data["target_image"])
-        time2 = time()
-
-        target = HeadSwapObj(img, iie)
-        time3 = time()
-
-        COMPATIBLE, details = target.check_compatibility()
-        encoded_result_image = None
-
-        if COMPATIBLE:
-            target.tick_compatibility()
-
-            HS = HeadSwapper(source_pose1, target, ch, debugging=False, logger=logger)
-            time4 = time()
-            encoded_result_image = encode_img(HS.result)
-            time5= time()
-        else:
-             pass
+# def digest_package_content_and_make_headswap(iie, ch,  config, data, logger):
+#     # ASD, domain, source_headswapObjs, format, mode, data, package_sent_time = package_content
+#
+#     elapsed_time = OrderedDict()
+#     time0= time()
+#
+#     source1_data=data["source_headswapObjs"][0]
+#     source_pose1 = make_headswapObj_from_json( source1_data, iie, encoded=True)
+#     # source_pose2 = make_headswapObj_from_json(source1_data, iie, encoded=True)
+#     # source_pose3 = make_headswapObj_from_json(source1_data, iie, encoded=True)
+#
+#     time1= time()
 
 
+    # if  config["return_img_format"] == "encoded":
+    #
+    #     img = decode_img(data["target_image"])
+    #     time2 = time()
+    #
+    #     target = HeadSwapObj(img, iie)
+    #     time3 = time()
+    #
+    #     COMPATIBLE, details = target.check_compatibility()
+    #     encoded_result_image = None
+    #
+    #     if COMPATIBLE:
+    #         target.tick_compatibility()
+    #
+    #         HS = HeadSwapper(source_pose1, target, ch, debugging=False, logger=logger)
+    #         time4 = time()
+    #         encoded_result_image = encode_img(HS.result)
+    #         time5= time()
+    #     else:
+    #          pass
 
-    elapsed_time["Total_ImgOp_Time"] =  round(time5-time0 ,3)
-    # elapsed_time["data_processing_start_time"] = time0
-    elapsed_time["source_heads_creation"] =  round(time1 - time0,3)
-    elapsed_time["decoding_target_img"] =  round(time2 - time1,3)
-    elapsed_time["creating_target_headswapObj"] = round( time3 - time2,3)
-    elapsed_time["headswapping"] =  round(time4 - time3 ,3)
-    elapsed_time["encoding_result_img"] =  round(time5 - time4 ,3)
 
-    return (COMPATIBLE,details), encoded_result_image, elapsed_time
+
+    # elapsed_time["Total_ImgOp_Time"] =  round(time5-time0 ,3)
+    # # elapsed_time["data_processing_start_time"] = time0
+    # elapsed_time["source_heads_creation"] =  round(time1 - time0,3)
+    # elapsed_time["decoding_target_img"] =  round(time2 - time1,3)
+    # elapsed_time["creating_target_headswapObj"] = round( time3 - time2,3)
+    # elapsed_time["headswapping"] =  round(time4 - time3 ,3)
+    # elapsed_time["encoding_result_img"] =  round(time5 - time4 ,3)
+    #
+    # return (COMPATIBLE,details), encoded_result_image, elapsed_time
 
 def preprocess_package_content():
     pass
-def digest_package_content_and_extract_head(iie,encoded_img, logger):
-    elapsed_time = OrderedDict()
-    time0 = time()
-
-    decoded_img = decode_img(encoded_img)
-    time1 = time()
-    source = HeadSwapObj(decoded_img, iie,  used_as_source=True)
-    time2 = time()
-    IS_COMPATIBLE, DETAILS=source.check_compatibility()
-
-    if IS_COMPATIBLE:
-
-        logger.debug( " " * 20 + "Img is compatible "   )
-        HE = HeadMaskCreator(source, CROP_Head=True, logger=logger)
-        time3 = time()
-        source = HE.headswapObj
-        logger.debug(" " * 20 + "HeadMask prepared ")
-
-    elapsed_time["Total_ImgOp_Time"] = round( time3 - time0 , 3)
-    elapsed_time["decoding_img"] = round( time1 - time0, 3)
-    elapsed_time["create_headswapObj"] =round(  time2 - time1, 3)
-    elapsed_time["create_headmask"] = round( time3 - time2, 3)
-
-    return (IS_COMPATIBLE,DETAILS), source ,elapsed_time
+# def digest_package_content_and_extract_head(iie,encoded_img, logger):
+#     elapsed_time = OrderedDict()
+#     time0 = time()
+#
+#     decoded_img = decode_img(encoded_img)
+#     time1 = time()
+#     source = HeadSwapObj(decoded_img, iie,  used_as_source=True)
+#     time2 = time()
+#     IS_COMPATIBLE, DETAILS=source.check_compatibility()
+#
+#     if IS_COMPATIBLE:
+#
+#         logger.debug( " " * 20 + "Img is compatible "   )
+#         HE = HeadMaskCreator(source, CROP_Head=True, logger=logger)
+#         time3 = time()
+#         source = HE.headswapObj
+#         logger.debug(" " * 20 + "HeadMask prepared ")
+#
+#     elapsed_time["Total_ImgOp_Time"] = round( time3 - time0 , 3)
+#     elapsed_time["decoding_img"] = round( time1 - time0, 3)
+#     elapsed_time["create_headswapObj"] =round(  time2 - time1, 3)
+#     elapsed_time["create_headmask"] = round( time3 - time2, 3)
+#
+#     return (IS_COMPATIBLE,DETAILS), source ,elapsed_time
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -327,20 +327,20 @@ def prepare_data_dict(source, et):
 #         }
 
 
-def upload_to_aws(s3, local_file, bucket, s3_file):
-    # s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-    #                   aws_secret_access_key=SECRET_KEY)
-
-    try:
-        s3.upload_file(local_file, bucket, s3_file)
-        # print("Upload Successful")
-        return True
-    except FileNotFoundError:
-        # print("The file was not found")
-        return False
-    except NoCredentialsError:
-        # print("Credentials not available")
-        return False
+# def upload_to_aws(s3, local_file, bucket, s3_file):
+#     # s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
+#     #                   aws_secret_access_key=SECRET_KEY)
+#
+#     try:
+#         s3.upload_file(local_file, bucket, s3_file)
+#         # print("Upload Successful")
+#         return True
+#     except FileNotFoundError:
+#         # print("The file was not found")
+#         return False
+#     except NoCredentialsError:
+#         # print("Credentials not available")
+#         return False
 
 
 def create_random_name(length):
@@ -361,36 +361,36 @@ def create_felix_image_dict(src, manipulated_image_url):
     return image_dict
 
 
-@timer_main
-def read_img_with_user_agent(url):
-    user_agent = {"user-agent": "Mozilla/5.0 (Windows NT 6.3; rv:36.0) .."}
-    http = urllib3.PoolManager(10, headers=user_agent)
-    r1 = http.urlopen("GET", url)
-    LINK_IS_IMAGE = False
-    im2arr = []
-    try:
-        image = Image.open(io.BytesIO(r1.data))
-        im2arr = np.array(image)
-        LINK_IS_IMAGE = True
-    except UnidentifiedImageError:
-        pass
-    return im2arr, LINK_IS_IMAGE
+# @timer_main
+# def read_img_with_user_agent(url):
+#     user_agent = {"user-agent": "Mozilla/5.0 (Windows NT 6.3; rv:36.0) .."}
+#     http = urllib3.PoolManager(10, headers=user_agent)
+#     r1 = http.urlopen("GET", url)
+#     LINK_IS_IMAGE = False
+#     im2arr = []
+#     try:
+#         image = Image.open(io.BytesIO(r1.data))
+#         im2arr = np.array(image)
+#         LINK_IS_IMAGE = True
+#     except UnidentifiedImageError:
+#         pass
+#     return im2arr, LINK_IS_IMAGE
 
 
-def extract_image_urls_from_post_call():
-    json = request.get_json()
-    length = len(json["images"])
-    print("num of images:", length)
-    # print(" json['images']:",json['images'])
-
-    list_of_image_links = []
-
-    for i in range(length):
-        temp = json["images"][i]["src"]
-        list_of_image_links.append(temp)
-        # print(" img:",i," ",temp)
-
-    return list_of_image_links
+# def extract_image_urls_from_post_call():
+#     json = request.get_json()
+#     length = len(json["images"])
+#     print("num of images:", length)
+#     # print(" json['images']:",json['images'])
+#
+#     list_of_image_links = []
+#
+#     for i in range(length):
+#         temp = json["images"][i]["src"]
+#         list_of_image_links.append(temp)
+#         # print(" img:",i," ",temp)
+#
+#     return list_of_image_links
 
 
 # def save_and_get_local_links_of_images(list_of_images,server_folder_path, local_host_path ):

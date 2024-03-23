@@ -26,7 +26,8 @@ class Operation(BaseModel):
     userid: Optional[str] = Field(alias="userid", default=None)
     package_sent_time: Optional[str] = Field(alias="package_sent_time", default=None)
     counter: Optional[int] = Field(alias="counter", default=None)
-    link: Optional[AnyUrl] = Field(alias="link", default=None)
+    link: Optional[str] = Field(alias="link", default=None)
+    # link: Optional[AnyUrl] = Field(alias="link", default=None)
     operation_name: Optional[str] = Field(alias="operation_name", default=None)
 
 Operation.update_forward_refs()

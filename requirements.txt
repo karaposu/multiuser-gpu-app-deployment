@@ -7,3 +7,6 @@ pkgutil
 importlib
 opencv-python
 psutil
+celery[redis]
+fastapi
+uvicorn

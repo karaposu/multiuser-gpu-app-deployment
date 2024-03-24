@@ -6,9 +6,10 @@ from models.image_result import ImageResult
 
 import cv2
 import base64
-# from src.myappfiles.workflow_api_parametized import main
+from myappfiles.ComfyUI.workflow_api_parametized_cache import main
+
 from myappfiles.dummy_base64_img_returner import base64_img
-# from myappfiles.workflow_api_parametized import main
+
 from models.dom_image_manipulation_response_data import DOMImageManipulationResponseData
 from .utils import decode_img, encode_img
 
@@ -33,11 +34,16 @@ class TextToImageService(BaseService):
     def make_image_generation(self):
 
         if self.preprocessed_data["COMPATIBLE"]:
-            pass
+
+            imgages=main(text="text_description", filename_prefix="a.png", dependency_container=None)
+            img=imgages[0]
+            print("shape", img.shape)
+            encoded_img= encode_img(img)
         else:
             pass
 
-        return base64_img, 10
+        # return base64_img, 10
+        return encoded_img, 10
 
     def process_request(self):
         encoded_result_image, elapsed_time = self.make_image_generation()

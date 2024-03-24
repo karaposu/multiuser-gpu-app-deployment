@@ -79,7 +79,9 @@ def add_extra_model_paths() -> None:
     """
     Parse the optional extra_model_paths.yaml file and add the parsed paths to the sys.path.
     """
-    from main import load_extra_path_config
+
+   # from myappfiles.ComfyUI.main import load_extra_path_config
+    #from main import load_extra_path_config
 
     extra_model_paths = find_path("extra_model_paths.yaml")
 
@@ -92,7 +94,7 @@ def add_extra_model_paths() -> None:
 add_comfyui_directory_to_sys_path()
 add_extra_model_paths()
 
-from src.openapi_server.apis.nodes import (
+from .nodes import (
     CLIPTextEncode,
     SaveImage,
     VAEDecode,

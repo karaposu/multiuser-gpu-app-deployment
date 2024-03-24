@@ -15,6 +15,27 @@ from fastapi import FastAPI
 
 from apis.default_api import router as DefaultApiRouter
 
+import sys
+import os
+
+# Assuming your main.py is at the root of your project structure
+# comfy_ui_path = os.path.abspath('./myappfiles/ComfyUI')
+# sys.path.append(comfy_ui_path)
+
+import importlib.util
+import sys
+
+
+# location= "/myappfiles/ComfyUI/workflow_api_parametized_cache.py"
+# # location= "/path/to/myappfiles/ComfyUI/workflow_api_parametized_cache.py"
+#
+# # Specify the path to workflow_api_parametized_cache.py
+# spec = importlib.util.spec_from_file_location("workflow_api_parametized_cache", location)
+# print("spec  ", spec)
+# workflow_api_parametized_cache = importlib.util.module_from_spec(spec)
+# sys.modules["workflow_api_parametized_cache"] = workflow_api_parametized_cache
+# spec.loader.exec_module(workflow_api_parametized_cache)
+
 # from impl.text_to_image import generate_image  # This is th
 
 app = FastAPI(
